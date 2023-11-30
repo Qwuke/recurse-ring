@@ -1,23 +1,10 @@
 [
   {
     "website_id": 0,
+    "website_uuid": "0cccc0a0-fa92-4c1a-8da2-b22817103c36",
     "recurse_id": 0,
     "website_name": "Other Recurse Webring",
     "recurse_name": null,
     "url": "http://ring.recurse.com"
-  },
-  {
-    "website_id": 1,
-    "recurse_id": 5993,
-    "website_name": "Test",
-    "recurse_name": null,
-    "url": "http://qwu.ke"
-  },
-  {
-    "website_id": 2,
-    "recurse_id": 5993,
-    "website_name": "Test site",
-    "recurse_name": null,
-    "url": "http://qwu.ke/posts"
   }
 ]
