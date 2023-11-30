@@ -1,21 +1,25 @@
 [
   {
-    "id": 555,
-    "name": "Tristan's Website",
-    "url": "https://qwu.ke"
+    "website_id":0,
+    "recurse_id": 0,
+    "name": "Other Recurse Webring",
+    "url": "https://ring.recurse.com"
   },
   {
-    "id": 7777,
+    "website_id": 1,
+    "recurse_id": 7777,
     "name": "Tristan Mortimer's Blog",
     "url": "https://qwu.ke/posts"
   },
   {
-    "id": 1,
+    "website_id": 2,
+    "recurse_id": 1,
     "name": "Fake Dog Website",
     "url": "https://qwu.ke/dogs"
   },
   {
-    "id": 1,
+    "website_id": 3,
+    "recurse_id": 1,
     "name": "Fake Dog Website 222",
     "url": "https://qwu.ke/dogs2222"
   }

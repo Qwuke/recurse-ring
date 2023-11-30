@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Rocket Form Example</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <h1>The Other Recurse Webring</h1>
+    <ul>
+        {{#each sites}}
+            <li><a href="{{this.uri}}">{{this.name}}</a> by Placeholder name</li>
+        {{/each}}
+    </ul>
+    <form action="/auth/add" method="post" enctype="multipart/form-data">
+        <fieldset>
+          <legend>Website Info</legend>
+            <label for="name">Website Name</label>
+            <input type="text"
+                name="name"
+                id="name"
+            />
+            <label for="domain">Website Domain</label>
+            <input type="text"
+                name="domain"
+                id="domain"
+            />
+            <input type="submit" value="Submit">
+        </fieldset>
+    </form>
+  </body>
+</html>
