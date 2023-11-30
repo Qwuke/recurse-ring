@@ -46,5 +46,13 @@
     "website_name": "Jacob Vosmaer's blog",
     "recurse_name": null,
     "url": "https://blog.jacobvosmaer.nl"
+  },
+  {
+    "website_id": 6,
+    "website_uuid": "f916420d-c0de-4840-b3e3-a6fd96e43019",
+    "recurse_id": 5218,
+    "website_name": "veryth.ink",
+    "recurse_name": null,
+    "url": "https://veryth.ink"
   }
 ]
