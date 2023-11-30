@@ -14,5 +14,13 @@
     "website_name": "Tristan's Blog!",
     "recurse_name": null,
     "url": "https://qwu.ke"
+  },
+  {
+    "website_id": 2,
+    "website_uuid": "5175343b-05fb-4291-90e9-0041688b83fb",
+    "recurse_id": 5993,
+    "website_name": "Tristan's Other Blog",
+    "recurse_name": null,
+    "url": "https://qwu.ke/posts"
   }
 ]
