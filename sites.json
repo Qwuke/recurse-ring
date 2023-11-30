@@ -5,30 +5,6 @@
     "recurse_id": 0,
     "website_name": "Other Recurse Webring",
     "recurse_name": null,
-    "url": "http://ring.recurse.com"
-  },
-  {
-    "website_id": 1,
-    "website_uuid": "d4b820f2-5013-4692-971c-392f808650cc",
-    "recurse_id": 5993,
-    "website_name": "Tristan's Blog!",
-    "recurse_name": null,
-    "url": "https://qwu.ke"
-  },
-  {
-    "website_id": 2,
-    "website_uuid": "5175343b-05fb-4291-90e9-0041688b83fb",
-    "recurse_id": 5993,
-    "website_name": "Tristan's Other Blog",
-    "recurse_name": null,
-    "url": "https://qwu.ke/posts"
-  },
-  {
-    "website_id": 3,
-    "website_uuid": "55325c75-ab45-4237-8fe0-0f45e9e0bdba",
-    "recurse_id": 5993,
-    "website_name": "Tristan's Third Blog",
-    "recurse_name": null,
-    "url": "https://qwu.ke/contact"
+    "url": "https://ring.recurse.com"
   }
 ]
