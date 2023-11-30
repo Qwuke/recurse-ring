@@ -38,5 +38,13 @@
     "website_name": "Craftinatorics",
     "recurse_name": null,
     "url": "https://craftinatorics.com/"
+  },
+  {
+    "website_id": 5,
+    "website_uuid": "e6c4953c-8c04-42a4-8252-6df74ce6927f",
+    "recurse_id": 5774,
+    "website_name": "Jacob Vosmaer's blog",
+    "recurse_name": null,
+    "url": "https://blog.jacobvosmaer.nl"
   }
 ]
