@@ -1,9 +1,11 @@
 [
   { 
+    "name": "Tristan's Website",
     "url": "https://qwu.ke",
     "id": 555
   },
   {
+    "name": "Tristan Mortimer's Blog",
     "url": "https://qwu.ke/posts",
     "id": 7777
   }
