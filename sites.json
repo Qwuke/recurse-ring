@@ -6,5 +6,13 @@
     "website_name": "Other Recurse Webring",
     "recurse_name": null,
     "url": "https://ring.recurse.com"
+  },
+  {
+    "website_id": 1,
+    "website_uuid": "b101da00-3999-4c31-84b8-491093f49a79",
+    "recurse_id": 5993,
+    "website_name": "Tristan's Blog!",
+    "recurse_name": null,
+    "url": "http://qwu.ke"
   }
 ]
