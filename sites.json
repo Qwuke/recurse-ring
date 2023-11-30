@@ -3,24 +3,6 @@
     "website_id":0,
     "recurse_id": 0,
     "name": "Other Recurse Webring",
-    "url": "https://ring.recurse.com"
-  },
-  {
-    "website_id": 1,
-    "recurse_id": 7777,
-    "name": "Tristan Mortimer's Blog",
-    "url": "https://qwu.ke/posts"
-  },
-  {
-    "website_id": 2,
-    "recurse_id": 1,
-    "name": "Fake Dog Website",
-    "url": "https://qwu.ke/dogs"
-  },
-  {
-    "website_id": 3,
-    "recurse_id": 1,
-    "name": "Fake Dog Website 222",
-    "url": "https://qwu.ke/dogs2222"
+    "url": "http://ring.recurse.com"
   }
 ]
