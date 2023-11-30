@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>The Recurse Webring</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <h1>The Recurse Webring</h1>
+    <h3>The webring for current and former members of the <a href="https://recurse.com">Recurse Center</a></h3>
+    <ul>
+        {% for site in sites -%}
+          <li><a href="{{site.url}}">{{site.website_name}}</a> by {{site.recurse_name}}</li>
+        {%- endfor %}
+    </ul>
+    {% if user %}
+      <br>
+      {% if id %}
+      <br>
+      <br>
+      <h2>Awesome! You added your site to the webring.</h2>
+
+      <br>
+      <p>Now all you need to do is add the script to your site either by adding <code>http://ring.recurse.com/ring.js</code> in your header file like so:</p>
+      <pre><code><textarea cols="80" rows="5" readonly>
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src="http://ring.recurse.com/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+&lt;/html&gt;
+      </textarea></code></pre>
+      <br>
+      <p>or by creating your own local JavaScript file using the code below: </p>
+      <pre><code><textarea cols="80" rows="5" readonly>
+        
+      </textarea></code></pre>
+      <br>
+      <p>And then adding these 3 HTML elements to the body of your page: </p>
+      <pre><code><textarea cols="80" rows="3"readonly>
+&lt;div&gt;&lt;a id="ring-prev" href="/prev?id={{id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="ring-home" href="http://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="ring-next" href="/next?id={{id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;
+        </textarea></code></pre>
+      <br>
+      <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
+      {% endif %}
+      <br>
+      <h2>Want to add your own site?</h3>
+      <form action="/auth/add" method="post" enctype="multipart/form-data">
+          <fieldset>
+            <legend>Website Info</legend>
+              <label for="name">Website Name</label>
+              <input type="text"
+                  name="name"
+                  id="name"
+              />
+              <label for="domain">Website Domain</label>
+              <input type="url"
+                  placeholder="https://... or http://..."
+                  name="url"
+                  id="url"
+              />
+              <input type="submit" value="Submit">
+          </fieldset>
+      </form>
+      <br>
+      <div><a href="/auth/logout">Logout</a></div>
+    {% else %}
+      <div><a href="/auth/login">Login</a></div>
+    {% endif %}
+    <br>
+    <br>
+    <div><a id="ring-prev" href="/prev?id=0">Prev</a></div>
+    <div><a id="ring-home" href="http://ring.recurse.com/">The Recurse Webring</a></div>
+    <div><a id="ring-next" href="/next?id=0">Next</a></div>
+  </body>
+</html>
