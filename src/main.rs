@@ -1,23 +1,23 @@
-#![feature(result_option_inspect)]
-
-use std::collections::HashMap;
 use tokio::sync::Mutex;
-use serde::{Serialize , Deserialize};
-use rocket::{request, form, Config, FromForm, State};
-use rocket::http::{Cookie, CookieJar, Status, SameSite, uri::{Uri, Absolute}};
-use rocket::response::Redirect;
-use rocket::response::status::{Unauthorized, NotFound};
-use rocket::form::{Context, Form};
-use rocket::fairing::{ Fairing, AdHoc} ;
-use rocket::request::{FromRequest, Outcome};
+use serde::{Serialize, Deserialize};
+use rocket::{
+    http::{Cookie, CookieJar, Status, 
+        uri::{Uri, Absolute}},
+    form::Form,
+    request::{FromRequest, Outcome},
+    response::{Redirect, status::NotFound },
+    fs::{FileServer, relative},
+    State, request, form, Config,};
 use reqwest::Client;
 use rocket_dyn_templates::{Template, context};
-use rocket_oauth2::{OAuth2, TokenResponse};
 use figment::providers::{Format, Toml};
 use figment::Figment;
-use octocrab::Octocrab;
-use octocrab::models::repos::CommitAuthor;
+use octocrab::{Octocrab, models::repos::{CommitAuthor, Content}};
 use addr::parse_domain_name;
+use rand::{thread_rng, Rng};
+use uuid::Uuid;
+
+mod oauth;
 
 #[macro_use] extern crate rocket;
 
@@ -41,6 +41,7 @@ struct ClientTokens {
 #[derive(Serialize, Deserialize)]
 struct SiteData {
     website_id: u32,
+    website_uuid: String,
     recurse_id: u32,
     website_name: String,
     recurse_name: Option<String>,
@@ -69,16 +70,15 @@ impl<'r> FromRequest<'r> for User {
         let cookies = request
             .guard::<&CookieJar<'_>>()
             .await
-            .expect("request cookies");
-        if let (Some(name), Some(id), Some(token)) = (cookies.get_private("name"), cookies.get_private("id"), cookies.get_private("api_token")) {
-            return Outcome::Success(User {
-                id: id.value().parse::<u32>().unwrap(),
-                name: name.value().to_string(),
-                token: Some(token.value().to_string()),
-            });
+            .expect("Cookies should be accessible from the request");
+        match (cookies.get_private("name"), cookies.get_private("id"), cookies.get_private("api_token")) {
+            (Some(name), Some(id), Some(token)) => 
+                Outcome::Success(User {
+                    id: id.value().parse::<u32>().unwrap(),
+                    name: name.value().to_string(),
+                    token: Some(token.value().to_string()) }),
+            _ => Outcome::Forward(Status::Unauthorized)
         }
-
-        Outcome::Forward(Status::Unauthorized)
     }
 }
 
@@ -99,7 +99,7 @@ fn valid_domain<'v>(input_url: &String) -> form::Result<'v, ()> {
     Ok(())
 }
 
-async fn get_site_content(octocrab: &Mutex<Octocrab>) -> octocrab::models::repos::Content {
+async fn get_site_content(octocrab: &Mutex<Octocrab>) -> Content {
     let all_contents = octocrab.lock().await.repos(GH_USER, GH_REPO)
     .get_content()
     .path(GH_SITES_PATH)
@@ -110,62 +110,50 @@ async fn get_site_content(octocrab: &Mutex<Octocrab>) -> octocrab::models::repos
     all_contents.items.first().unwrap().clone()
 }
 
-pub fn recurse_oauth_fairing() -> impl Fairing {
-    AdHoc::on_ignite("Recurse OAuth2", |rocket| async {
-        rocket
-            .mount("/", rocket::routes![login, callback])
-            .attach(OAuth2::<User>::fairing("recurse"))
-    })
-}
+async fn get_named_sites(unnamed_sites: Vec<SiteData>, bearer_token: &String) -> Vec<SiteData> {
+    let mut sites_with_names = Vec::new();
 
-#[get("/auth/callback")]
-async fn callback(
-    token: TokenResponse<User>,
-    cookies: &CookieJar<'_>,
-) -> Result<Redirect, String> {
-    let access_token = token.access_token().to_owned();
-    let response = Client::new()
-        .get(format!("{}profiles/me", RECURSE_BASE_URL))
-        .bearer_auth(access_token.clone())
-        .send().await.unwrap();
+    for site in unnamed_sites {
+        if site.website_id != 0 {
+            let response = Client::new()
+                .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
+                .bearer_auth(bearer_token)
+                .send().await.unwrap();
+            let res = response.text().await.unwrap();
+            let Ok(user) = serde_json::from_str::<User>(res.as_str()) else {
+                return Vec::new();
+            };
 
-    if !response.status().is_success() {
-        return Err(format!("Got non-success status {}", response.status()));
+            sites_with_names.push(SiteData { 
+                website_id: site.website_id,
+                website_uuid: site.website_uuid,
+                recurse_id: site.recurse_id,
+                website_name: site.website_name,
+                recurse_name: Some(user.name),
+                url: site.url,
+            });
+        }
     }
 
-    let user: User = serde_json::from_str(response.text().await.unwrap().as_str()).unwrap();
-
-    cookies.add_private(
-        Cookie::build(("name", user.name))
-            .same_site(SameSite::Lax)
-            .build(),
-    );
-
-    cookies.add_private(
-        Cookie::build(("id", user.id.to_string()))
-            .same_site(SameSite::Lax)
-            .build(),
-    );
-
-    cookies.add_private(
-        Cookie::build(("api_token", access_token))
-            .same_site(SameSite::Lax)
-            .build(),
-    );
-
-    Ok(Redirect::to("/"))
+    return sites_with_names;
 }
 
-#[get("/auth/login")]
-fn login(oauth2: OAuth2<User>, cookies: &CookieJar<'_>) -> Redirect {
-    oauth2.get_redirect(cookies, &[]).unwrap()
+#[get("/?<id>&<uuid_str>")]
+async fn authed(user: User, gh_client: &State<Mutex<Octocrab>>, id: Option<u32>, uuid_str: Option<String>) -> Template {
+    let encoded_sites = get_site_content(gh_client.inner()).await;
+    let site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
+    let sites_with_names = get_named_sites(site_data, user.token.as_ref().unwrap()).await;
+
+    Template::render("index", context! { sites: sites_with_names, user, id, uuid_str })
 }
 
-#[get("/auth/logout")]
-fn logout(_user: User, cookies: &CookieJar<'_>) -> Redirect {
-    cookies.remove(Cookie::from("name"));
-    cookies.remove(Cookie::from("id"));
-    Redirect::to("/")
+#[get("/", rank = 2)]
+async fn home(gh_client: &State<Mutex<Octocrab>>, client_tokens: &State<Mutex<ClientTokens>>) -> Template {
+    let encoded_sites = get_site_content(gh_client.inner()).await;
+    let site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
+
+    let sites_with_names = get_named_sites(site_data, &client_tokens.lock().await.recurse_secret).await;
+    Template::render("index", context! { sites: sites_with_names })
 }
 
 #[post("/auth/add", data = "<form>")]
@@ -173,12 +161,14 @@ async fn add(user: User, form: Form<WebsiteSignup>, gh_client: &State<Mutex<Octo
     let encoded_sites = get_site_content(gh_client.inner()).await;
     let mut site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
     let max_website_id = site_data.iter().max_by_key(|site| site.website_id).unwrap().website_id;
+    let uuid_str = Uuid::new_v4().to_string();
     let new_site = SiteData {
         website_id: max_website_id + 1,
+        website_uuid: uuid_str.clone(),
         recurse_id: user.id, 
         website_name: form.name.clone(), 
         recurse_name: None,
-        url:  form.url.clone(), 
+        url: form.url.clone(), 
     };
 
     site_data.push(new_site);
@@ -202,40 +192,15 @@ async fn add(user: User, form: Form<WebsiteSignup>, gh_client: &State<Mutex<Octo
         .send()
         .await.unwrap();
 
-    Redirect::to(format!("/?id={}", max_website_id + 1))
+    Redirect::to(format!("/?id={}&uuid_str={}", max_website_id + 1, uuid_str))
 }
 
-#[get("/?<id>")]
-async fn authed(user: User, gh_client: &State<Mutex<Octocrab>>, id: Option<u32>) -> Template {
-    let encoded_sites = get_site_content(gh_client.inner()).await;
-    let site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
-    let mut sites_with_names = Vec::new();
-    for site in site_data {
-        if site.website_id != 0 {
-            let response = Client::new()
-            .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
-            .bearer_auth(user.token.clone().unwrap())
-            .send().await.unwrap();
-
-            let user: User = serde_json::from_str(response.text().await.unwrap().as_str()).unwrap();
-            sites_with_names.push(SiteData { 
-                website_id: site.website_id,
-                recurse_id: site.recurse_id,
-                website_name: site.website_name,
-                recurse_name: Some(user.name),
-                url: site.url,
-            });
-        }
-    }
-    Template::render("index", context! { sites: sites_with_names, user, id })
-}
-
-#[get("/", rank = 2)]
-async fn home(gh_client: &State<Mutex<Octocrab>>) -> Template {
-    let encoded_sites = get_site_content(gh_client.inner()).await;
-    let site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
-
-    Template::render("index", context! { sites: site_data })
+#[get("/auth/logout")]
+fn logout(_user: User, cookies: &CookieJar<'_>) -> Redirect {
+    cookies.remove(Cookie::from("name"));
+    cookies.remove(Cookie::from("id"));
+    cookies.remove(Cookie::from("api_token"));
+    Redirect::to("/")
 }
 
 #[get("/prev?<id>")]
@@ -268,17 +233,27 @@ async fn next(id: u32, gh_client: &State<Mutex<Octocrab>>) -> Result<Redirect, N
     Ok(Redirect::to(redirect_site.url.clone()))
 }
 
+#[get("/rand")]
+async fn random(gh_client: &State<Mutex<Octocrab>>) -> Redirect {
+    let encoded_sites = get_site_content(gh_client.inner()).await;
+    let site_data: Vec<SiteData> = serde_json::from_str(encoded_sites.decoded_content().as_ref().unwrap()).unwrap();
+    let mut rng = thread_rng();
+    let random_site = &site_data[rng.gen_range(1..site_data.len())];
+    Redirect::to(random_site.url.clone())
+}
 
 #[launch]
 #[tokio::main]
 async fn rocket() -> _ {
     let config: ClientTokens = Figment::from(Toml::file("Secrets.toml")).extract().expect("Config should be extractable");
-    let octocrab = Octocrab::builder().personal_token(config.github_secret).build().unwrap();
+    let octocrab = Octocrab::builder().personal_token(config.github_secret.clone()).build().unwrap();
 
     rocket::build()
         .manage(Mutex::new(octocrab))
-        .attach(recurse_oauth_fairing())
+        .manage(Mutex::new(config))
+        .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
-        .mount("/", routes![authed, home, add, logout, prev, next])
+        .mount("/", routes![authed, home, add, logout, prev, next, random])
+        .mount("/", FileServer::from(relative!("static")))
 }

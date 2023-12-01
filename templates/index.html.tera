@@ -9,7 +9,7 @@
   </head>
   <body>
     <h1>The Recurse Webring</h1>
-    <h3>The webring for current and former members of the <a href="https://recurse.com">Recurse Center</a></h3>
+    <h3>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
     <ul>
         {% for site in sites -%}
           <li><a href="{{site.url}}">{{site.website_name}}</a> by {{site.recurse_name}}</li>
@@ -20,28 +20,24 @@
       {% if id %}
       <br>
       <br>
-      <h2>Awesome! You added your site to the webring.</h2>
+      <h2>Awesome! You've added your site to the webring.</h2>
 
       <br>
       <p>Now all you need to do is add the script to your site either by adding <code>http://ring.recurse.com/ring.js</code> in your header file like so:</p>
       <pre><code><textarea cols="80" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
-        &lt;script src="http://ring.recurse.com/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script src="https://ring.recurse.com/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;
       </textarea></code></pre>
       <br>
-      <p>or by creating your own local JavaScript file using the code below: </p>
-      <pre><code><textarea cols="80" rows="5" readonly>
-        
-      </textarea></code></pre>
-      <br>
-      <p>And then adding these 3 HTML elements to the body of your page: </p>
-      <pre><code><textarea cols="80" rows="3"readonly>
-&lt;div&gt;&lt;a id="ring-prev" href="/prev?id={{id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
-&lt;div&gt;&lt;a id="ring-home" href="http://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
-&lt;div&gt;&lt;a id="ring-next" href="/next?id={{id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;
+      <p>And then add these 4 HTML elements to the body of your page: </p>
+      <pre><code><textarea cols="80" rows="5"readonly>
+&lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{uuid_str}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-next" href="https://ring.recurse.com/next?id={{id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;
         </textarea></code></pre>
       <br>
       <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
@@ -72,8 +68,9 @@
     {% endif %}
     <br>
     <br>
-    <div><a id="ring-prev" href="/prev?id=0">Prev</a></div>
-    <div><a id="ring-home" href="http://ring.recurse.com/">The Recurse Webring</a></div>
-    <div><a id="ring-next" href="/next?id=0">Next</a></div>
+    <div><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></div>
+    <div><a id="rc-ring-home" href="https://ring.recurse.com/">The Recurse Webring</a></div>
+    <div><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></div>
+    <div><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></div>
   </body>
 </html>

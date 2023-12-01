@@ -1660,6 +1660,7 @@ dependencies = [
  "addr",
  "figment",
  "octocrab",
+ "rand",
  "reqwest",
  "rocket",
  "rocket_dyn_templates",
@@ -1667,6 +1668,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -2790,6 +2792,15 @@ dependencies = [
  "idna",
  "percent-encoding",
  "serde",
+]
+
+[[package]]
+name = "uuid"
+version = "1.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e395fcf16a7a3d8127ec99782007af141946b4795001f876d54fb0d55978560"
+dependencies = [
+ "getrandom",
 ]
 
 [[package]]
