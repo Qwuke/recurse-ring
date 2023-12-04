@@ -1,3 +1,7 @@
 /target
 *Secrets.toml
 *Rocket.toml
+*.terraform.lock.hcl
+*environment.tf
+*docker-compose.yaml
+.terraform*

@@ -5,13 +5,12 @@ use rocket::{
         uri::{Uri, Absolute}},
     form::Form,
     request::{FromRequest, Outcome},
-    response::{Redirect, status::NotFound },
+    response::{Redirect, status::{NotFound, Accepted}},
     fs::{FileServer, relative},
-    State, request, form, Config,};
+    State, request, form, Config};
 use reqwest::Client;
 use rocket_dyn_templates::{Template, context};
-use figment::providers::{Format, Toml};
-use figment::Figment;
+use figment::{Figment, providers::Env};
 use octocrab::{Octocrab, models::repos::{CommitAuthor, Content}};
 use addr::parse_domain_name;
 use rand::{thread_rng, Rng};
@@ -242,10 +241,13 @@ async fn random(gh_client: &State<Mutex<Octocrab>>) -> Redirect {
     Redirect::to(random_site.url.clone())
 }
 
+#[get("/health")]
+fn health() -> Accepted<String> { Accepted("pong!".to_owned()) }
+
 #[launch]
 #[tokio::main]
 async fn rocket() -> _ {
-    let config: ClientTokens = Figment::from(Toml::file("Secrets.toml")).extract().expect("Config should be extractable");
+    let config: ClientTokens = Figment::from(Env::prefixed("CONFIG_")).extract().expect("Config should be extractable");
     let octocrab = Octocrab::builder().personal_token(config.github_secret.clone()).build().unwrap();
 
     rocket::build()
@@ -254,6 +256,6 @@ async fn rocket() -> _ {
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
-        .mount("/", routes![authed, home, add, logout, prev, next, random])
+        .mount("/", routes![authed, home, add, logout, prev, next, random, health])
         .mount("/", FileServer::from(relative!("static")))
 }

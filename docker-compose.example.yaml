@@ -1,0 +1,15 @@
+version: "3.0"
+
+services:
+  rocket:
+    build: .
+    command: |
+      /usr/local/bin/recurse-ring
+    environment:
+      - ROCKET_SECRET_KEY=""
+      - CONFIG_RECURSE_CLIENT_ID=""
+      - CONFIG_RECURSE_SECRET=""
+      - CONFIG_GITHUB_SECRET=""
+      - ROCKET_OAUTH_RECURSE_AUTH_URI=""
+    ports:
+      - 4000:4000
