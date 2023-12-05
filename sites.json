@@ -62,5 +62,13 @@
     "website_name": "Evan's Site",
     "recurse_name": null,
     "url": "https://evanconway.github.io/"
+  },
+  {
+    "website_id": 8,
+    "website_uuid": "a76734eb-cb49-474c-98b1-931ffaece763",
+    "recurse_id": 5687,
+    "website_name": "Reuben Blarg",
+    "recurse_name": null,
+    "url": "https://reubenson.com/recurse/"
   }
 ]
