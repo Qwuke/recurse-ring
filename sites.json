@@ -70,5 +70,13 @@
     "website_name": "Reuben Blarg",
     "recurse_name": null,
     "url": "https://reubenson.com/recurse/"
+  },
+  {
+    "website_id": 9,
+    "website_uuid": "8a57f8aa-2879-42d0-b394-66ccf4e17a39",
+    "recurse_id": 5988,
+    "website_name": "And Another Player Yet To Be Named",
+    "recurse_name": null,
+    "url": "http://aristobit.com/blog"
   }
 ]
