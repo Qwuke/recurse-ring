@@ -78,5 +78,13 @@
     "website_name": "And Another Player Yet To Be Named",
     "recurse_name": null,
     "url": "http://aristobit.com/blog"
+  },
+  {
+    "website_id": 10,
+    "website_uuid": "57c02448-2deb-4e36-b6f1-92441549fafb",
+    "recurse_id": 3265,
+    "website_name": "Revenge of the Anti-Penguin",
+    "recurse_name": null,
+    "url": "https://www.scannedinavian.com/"
   }
 ]
