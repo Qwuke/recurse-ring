@@ -21,12 +21,12 @@ RUN apt install -y libpq-dev ca-certificates
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=4000
 EXPOSE 4000
-COPY --from=0 /app/target/release/recurse-ring /usr/local/bin/recurse-ring
-COPY --from=0 /app/templates/ /app/templates/
-COPY --from=0 /app/templates/ /usr/local/bin/app/templates/
-COPY --from=0 /app/templates/ /usr/local/bin/templates/
-COPY --from=0 /app/static/ /app/static/
-COPY --from=0 /app/static/ /usr/local/bin/app/static/
+COPY --from=builder /app/target/release/recurse-ring /usr/local/bin/recurse-ring
+COPY --from=builder /app/templates/ /app/templates/
+COPY --from=builder /app/templates/ /usr/local/bin/app/templates/
+COPY --from=builder /app/templates/ /usr/local/bin/templates/
+COPY --from=builder /app/static/ /app/static/
+COPY --from=builder /app/static/ /usr/local/bin/app/static/
 
 WORKDIR /usr/local/bin
 CMD ["recurse-ring"]

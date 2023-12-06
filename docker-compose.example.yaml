@@ -10,6 +10,6 @@ services:
       - CONFIG_RECURSE_CLIENT_ID=""
       - CONFIG_RECURSE_SECRET=""
       - CONFIG_GITHUB_SECRET=""
-      - ROCKET_OAUTH_RECURSE_AUTH_URI=""
+      - ROCKET_OAUTH="{recurse={auth_uri="",token_uri="",client_id="",client_secret="",redirect_uri=""}}"
     ports:
       - 4000:4000
