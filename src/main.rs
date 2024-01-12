@@ -4,7 +4,7 @@ use rocket::{
     form::Form,
     request::{FromRequest, Outcome},
     response::{Redirect, Debug},
-    fs::{FileServer, NamedFile, relative},
+    fs::{FileServer, relative},
     serde::{Serialize, Deserialize, json::Json}, 
     State, request, form, Config};
 use tokio::sync::{Mutex, RwLock};
@@ -18,7 +18,6 @@ use octocrab::{Octocrab, models::repos::{CommitAuthor, Content}};
 use addr::parse_domain_name;
 use rand::{thread_rng, Rng};
 use uuid::Uuid;
-use std::path::Path;
 
 mod oauth;
 
@@ -161,33 +160,29 @@ async fn get_named_sites(unnamed_sites: Vec<SiteData>, bearer_token: &String) ->
 }
 
 #[get("/?<id>&<uuid_str>")]
-async fn authed(user: User, sites_data: &State<SitesMap>, id: Option<u32>, uuid_str: Option<String>) 
-    -> Result<Template, Debug<Error>> {
+async fn authed(user: User, sites_data: &State<SitesMap>, 
+    id: Option<u32>, uuid_str: Option<String>) -> Template {
     
     let recurse_sites = sites_data.read().await
         .values().cloned()
         .collect::<Vec<SiteData>>();
-    let sites_with_names = get_named_sites(recurse_sites, user.token.as_ref().unwrap()).await?;
 
-    Ok(Template::render("index", context! { sites: sites_with_names, user, id, uuid_str }))
+    Template::render("index", context! { sites: recurse_sites, user, id, uuid_str })
 }
 
 #[get("/", rank = 2)]
-async fn home(sites_data: &State<SitesMap>, client_tokens: &State<Mutex<ClientTokens>>) 
-    -> Result<Template, Debug<Error>> {
-    
+async fn home(sites_data: &State<SitesMap>) -> Template {
     let recurse_sites = sites_data.read().await
         .values().cloned()
         .collect::<Vec<SiteData>>();
-    let sites_with_names = get_named_sites(recurse_sites, &client_tokens.lock().await.recurse_secret).await?;
 
-    Ok(Template::render("index", context! { sites: sites_with_names }))
+    Template::render("index", context! { sites: recurse_sites })
 }
 
 #[post("/auth/add", data = "<form>")]
-async fn add(user: User, sites_data: &State<SitesMap>, form: Form<WebsiteSignup>, gh_client: &State<Mutex<Octocrab>>) 
-    -> Result<Redirect, Debug<Error>> {
-   
+async fn add(user: User, sites_data: &State<SitesMap>, form: Form<WebsiteSignup>, 
+    gh_client: &State<Mutex<Octocrab>>, client_tokens: &State<Mutex<ClientTokens>>) 
+        -> Result<Redirect, Debug<Error>> {   
     let locked_gh_client = gh_client.lock().await;
     let sites_sha = get_site_content(&locked_gh_client).await?.sha;
     let mut recurse_sites = get_deserialized_sites(&locked_gh_client).await?;
@@ -217,7 +212,9 @@ async fn add(user: User, sites_data: &State<SitesMap>, form: Form<WebsiteSignup>
     // Wipe entire map instead of inserting new site to ensure data is synchronized 
     let mut writeable_sites = sites_data.write().await;
     writeable_sites.clear();
-    writeable_sites.append(&mut recurse_sites.into_iter()
+    let recurse_secret = &client_tokens.lock().await.recurse_secret;
+    let sites_with_names = get_named_sites(recurse_sites, recurse_secret).await?;
+    writeable_sites.append(&mut sites_with_names.into_iter()
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>());
     
@@ -278,17 +275,11 @@ async fn random(sites_data: &State<SitesMap>) -> Redirect {
     Redirect::to(random_site.url.clone())
 }
 
-// Backwards compatible static javascript file
-#[get("/ring.js")]
-async fn static_javascript() -> Option<NamedFile> {
-    let path = Path::new(relative!("static")).join("ring.js");
-    NamedFile::open(path).await.ok()
-}
-
 #[get("/sites.json")]
 async fn dynamic_json(sites_data: &State<SitesMap>) -> Json<Vec<SiteData>> {
     let serializable_sites = sites_data.read().await
         .values().cloned()
+        .map(|mut site| { site.recurse_name = None; site })
         .collect::<Vec<SiteData>>();
     Json(serializable_sites)
 }
@@ -311,10 +302,13 @@ async fn rocket() -> _ {
     let initial_site_data = get_deserialized_sites(&octocrab).await
         .expect("Should retrieve initial sites from GitHub");
 
-    let ordered_sites = initial_site_data.into_iter()
+    let sites_with_names = get_named_sites(initial_site_data, &config.recurse_secret).await
+        .expect("Should retrieve names of site owners from Recurse");
+
+    let ordered_sites = sites_with_names.into_iter()
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>();
-    
+
     rocket::build()
         .manage(Mutex::new(octocrab))
         .manage(Mutex::new(config))
@@ -323,6 +317,7 @@ async fn rocket() -> _ {
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
         .mount("/", routes![authed, home, add, logout, prev, next, random, 
-            dynamic_json, static_javascript, health])
-        .mount("/static/", FileServer::from(relative!("static")))
+            dynamic_json, health])
+        .mount("/", FileServer::from(relative!("static")))
+        .mount("/static/", FileServer::from(relative!("static")).rank(3))
 }
