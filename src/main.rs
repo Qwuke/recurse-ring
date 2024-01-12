@@ -4,9 +4,9 @@ use rocket::{
     request::{FromRequest, Outcome},
     response::{Redirect, Debug},
     fs::{FileServer, relative},
+    serde::{Serialize, Deserialize, json::Json}, 
     State, request, form, Config};
 use tokio::sync::Mutex;
-use serde::{Serialize, Deserialize};
 use anyhow::{Error, Result, anyhow, Context};
 use reqwest::Client;
 use rocket_dyn_templates::{Template, context};
@@ -268,6 +268,12 @@ async fn random(gh_client: &State<Mutex<Octocrab>>) -> Result<Redirect, Debug<Er
     Ok(Redirect::to(random_site.url))
 }
 
+#[get("/static/sites.json")]
+async fn static_sites(gh_client: &State<Mutex<Octocrab>>) -> Json<Vec<SiteData>> {
+    let site_data = get_deserialized_sites(gh_client).await.unwrap();
+    Json(site_data)
+}
+
 #[get("/health")]
 fn health() -> String { "pong!".to_owned() }
 
@@ -289,6 +295,6 @@ async fn rocket() -> _ {
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
-        .mount("/", routes![authed, home, add, logout, prev, next, random, health])
-        .mount("/", FileServer::from(relative!("static")))
+        .mount("/", routes![authed, home, add, logout, prev, next, random, static_sites, health])
+        .mount("/static/", FileServer::from(relative!("static")))
 }

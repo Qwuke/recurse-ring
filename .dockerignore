@@ -2,6 +2,7 @@
 .vscode
 .DS_Store
 main.tf
+network.tf
 /.terraform
 **/.terraform/*
 
