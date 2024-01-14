@@ -9,7 +9,6 @@ use anyhow::{anyhow, Error, Context};
 
 use crate::User;
 
-
 pub fn recurse_oauth_fairing() -> impl Fairing {
     AdHoc::on_ignite("Recurse OAuth2", |rocket| async {
         rocket
