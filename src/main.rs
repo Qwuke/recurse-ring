@@ -1,25 +1,28 @@
 #![feature(btree_cursors)]
+use anyhow::{anyhow, Context, Result};
+use figment::{providers::Env, Figment};
+use octocrab::{models::repos::Content, Octocrab};
+use rand::{thread_rng, Rng};
+use reqwest::Client;
 use rocket::{
+    fs::{relative, FileServer},
     http::{Cookie, CookieJar, Status},
+    request,
     request::{FromRequest, Outcome},
     response::Redirect,
-    fs::{FileServer, relative},
-    serde::{Serialize, Deserialize, json::Json}, 
-    State, request, Config};
-use tokio::sync::{Mutex, RwLock};
+    serde::{json::Json, Deserialize, Serialize},
+    Config, State,
+};
+use rocket_dyn_templates::{context, Template};
 use std::collections::BTreeMap;
 use std::ops::Bound;
-use anyhow::{Result, anyhow, Context};
-use reqwest::Client;
-use rocket_dyn_templates::{Template, context};
-use figment::{Figment, providers::Env};
-use octocrab::{Octocrab, models::repos::Content};
-use rand::{thread_rng, Rng};
+use tokio::sync::{Mutex, RwLock};
 
 mod oauth;
 mod sites;
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 const GH_USER: &str = "Qwuke";
 const GH_REPO: &str = "recurse-ring";
@@ -62,29 +65,38 @@ impl<'r> FromRequest<'r> for User {
 
     async fn from_request(request: &'r request::Request<'_>) -> Outcome<User, ()> {
         let cookies = request
-            .guard::<&CookieJar<'_>>()
-            .await
+            .guard::<&CookieJar<'_>>().await
             .expect("Cookies should be accessible from the request");
 
-        match (cookies.get_private("name"), cookies.get_private("id"), cookies.get_private("api_token")) {
-            (Some(name), Some(id), Some(token)) => 
+        match (
+            cookies.get_private("name"),
+            cookies.get_private("id"),
+            cookies.get_private("api_token"),
+        ) {
+            (Some(name), 
+            Some(id), 
+            Some(token)) => 
                 Outcome::Success(User {
                     id: id.value().parse::<u32>().unwrap(),
                     name: name.value().to_string(),
-                    token: Some(token.value().to_string()) }),
-            _ => Outcome::Forward(Status::Unauthorized)
+                    token: Some(token.value().to_string()),
+                }),
+            _ => Outcome::Forward(Status::Unauthorized),
         }
     }
 }
 
 async fn get_site_content(octocrab: &Octocrab) -> Result<Content> {
-    let all_contents = octocrab.repos(GH_USER, GH_REPO)
+    let all_contents = octocrab
+        .repos(GH_USER, GH_REPO)
         .get_content()
         .path(GH_SITES_PATH)
         .r#ref("main")
         .send().await?;
 
-    all_contents.items.into_iter()
+    all_contents
+        .items
+        .into_iter()
         .next()
         .ok_or(anyhow!("Missing GitHub content for {}", GH_SITES_PATH))
 }
@@ -94,11 +106,13 @@ async fn get_deserialized_sites(octocrab: &Octocrab) -> Result<Vec<SiteData>> {
         .decoded_content()
         .ok_or(anyhow!("Could not decode GitHub content"))?;
 
-    serde_json::from_str(&decoded_sites)
-        .context("Unable to deserialize sites from GitHub file")
+    serde_json::from_str(&decoded_sites).context("Unable to deserialize sites from GitHub file")
 }
 
-async fn get_named_sites(unnamed_sites: Vec<SiteData>, bearer_token: &String) -> Result<Vec<SiteData>> {
+async fn get_named_sites(
+    unnamed_sites: Vec<SiteData>,
+    bearer_token: &String,
+) -> Result<Vec<SiteData>> {
     let mut sites_with_names = Vec::new();
 
     for site in unnamed_sites {
@@ -112,7 +126,7 @@ async fn get_named_sites(unnamed_sites: Vec<SiteData>, bearer_token: &String) ->
                 return Ok(Vec::new());
             };
 
-            sites_with_names.push(SiteData { 
+            sites_with_names.push(SiteData {
                 website_id: site.website_id,
                 website_uuid: site.website_uuid,
                 recurse_id: site.recurse_id,
@@ -127,20 +141,29 @@ async fn get_named_sites(unnamed_sites: Vec<SiteData>, bearer_token: &String) ->
 }
 
 #[get("/?<id>&<uuid_str>")]
-async fn authed(user: User, sites_data: &State<SitesMap>, 
-    id: Option<u32>, uuid_str: Option<String>) -> Template {
-    
-    let recurse_sites = sites_data.read().await
-        .values().cloned()
+async fn authed(
+    user: User,
+    sites_data: &State<SitesMap>,
+    id: Option<u32>,
+    uuid_str: Option<String>,
+) -> Template {
+    let recurse_sites = sites_data
+        .read().await
+        .values()
+        .cloned()
         .collect::<Vec<SiteData>>();
 
-    Template::render("index", context! { sites: recurse_sites, user, id, uuid_str })
+    Template::render(
+        "index",
+        context! { sites: recurse_sites, user, id, uuid_str })
 }
 
 #[get("/", rank = 2)]
 async fn home(sites_data: &State<SitesMap>) -> Template {
-    let recurse_sites = sites_data.read().await
-        .values().cloned()
+    let recurse_sites = sites_data
+        .read().await
+        .values()
+        .cloned()
         .collect::<Vec<SiteData>>();
 
     Template::render("index", context! { sites: recurse_sites })
@@ -157,24 +180,28 @@ fn logout(_user: User, cookies: &CookieJar<'_>) -> Redirect {
 #[get("/prev?<requested_id>")]
 async fn prev(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
     let readable_sites = sites_data.read().await;
-    let last_key_value = readable_sites.last_key_value()
-                .expect("Should always have the last site to wrap around to");
-    let (_actual_id, prev_site) = readable_sites.lower_bound(Bound::Included(&requested_id))
+    let last_key_value = readable_sites
+        .last_key_value()
+        .expect("Should always have the last site to wrap around to");
+    let (_actual_id, prev_site) = readable_sites
+        .lower_bound(Bound::Included(&requested_id))
         .key_value()
         .unwrap_or(last_key_value);
-        
+
     Redirect::to(prev_site.url.clone())
 }
 
 #[get("/next?<requested_id>")]
 async fn next(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
     let readable_sites = sites_data.read().await;
-    let first_key_value = readable_sites.first_key_value()
-                .expect("Should always have the first site to wrap around to");
-    let (_actual_id, next_site) = readable_sites.upper_bound(Bound::Included(&requested_id))
+    let first_key_value = readable_sites
+        .first_key_value()
+        .expect("Should always have the first site to wrap around to");
+    let (_actual_id, next_site) = readable_sites
+        .upper_bound(Bound::Included(&requested_id))
         .key_value()
         .unwrap_or(first_key_value);
-        
+
     Redirect::to(next_site.url.clone())
 }
 
@@ -183,16 +210,22 @@ async fn random(sites_data: &State<SitesMap>) -> Redirect {
     let readable_sites = sites_data.read().await;
     let mut rng = thread_rng();
     let non_main_site_index = rng.gen_range(1..readable_sites.len());
-    let random_site = readable_sites.values().nth(non_main_site_index)
+    let random_site = readable_sites
+        .values()
+        .nth(non_main_site_index)
         .expect("Should always have a random indice based on length");
     Redirect::to(random_site.url.clone())
 }
 
 #[get("/sites.json")]
 async fn dynamic_json(sites_data: &State<SitesMap>) -> Json<Vec<SiteData>> {
-    let serializable_sites = sites_data.read().await
-        .values().cloned()
-        .map(|mut site| { site.recurse_name = None; site })
+    let serializable_sites = sites_data
+        .read().await
+        .values()
+        .cloned()
+        .map(|mut site| {
+            site.recurse_name = None;
+            site })
         .collect::<Vec<SiteData>>();
     Json(serializable_sites)
 }
@@ -218,7 +251,8 @@ async fn rocket() -> _ {
     let sites_with_names = get_named_sites(initial_site_data, &config.recurse_secret).await
         .expect("Should retrieve names of site owners from Recurse");
 
-    let ordered_sites = sites_with_names.into_iter()
+    let ordered_sites = sites_with_names
+        .into_iter()
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>();
 
@@ -229,8 +263,8 @@ async fn rocket() -> _ {
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
-        .mount("/", routes![authed, home, sites::add, sites::update, sites::delete, logout, prev,
-            next, random, dynamic_json, health])
+        .mount("/", routes![authed, home, sites::add, sites::update, 
+            sites::delete, logout, prev, next, random, dynamic_json, health])
         .mount("/", FileServer::from(relative!("static")))
         .mount("/static/", FileServer::from(relative!("static")).rank(3))
 }
