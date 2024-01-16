@@ -184,7 +184,7 @@ async fn prev(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
         .last_key_value()
         .expect("Should always have the last site to wrap around to");
     let (_actual_id, prev_site) = readable_sites
-        .lower_bound(Bound::Included(&requested_id))
+        .lower_bound(Bound::Excluded(&requested_id))
         .key_value()
         .unwrap_or(last_key_value);
 
@@ -198,7 +198,7 @@ async fn next(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
         .first_key_value()
         .expect("Should always have the first site to wrap around to");
     let (_actual_id, next_site) = readable_sites
-        .upper_bound(Bound::Included(&requested_id))
+        .upper_bound(Bound::Excluded(&requested_id))
         .key_value()
         .unwrap_or(first_key_value);
 
