@@ -1,0 +1,7 @@
+a + input:checked + button + div { display: block; }
+a + input + button + div { display: none; }
+
+a + input:checked + button label:after { content: "\00a0 👁️👁️ \00a0 Hide\00a0"; }
+a + input + button label:after { content: "\00a0 👀 \00a0 Edit\00a0"; }
+
+button { padding: 0; }

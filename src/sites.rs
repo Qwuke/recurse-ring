@@ -137,7 +137,7 @@ pub async fn add(
     Ok(Redirect::to(format!("/?id={}&uuid_str={}", max_website_id + 1, uuid_str)))
 }
 
-#[put("/sites/update/<id>", data = "<form>")]
+#[post("/sites/update/<id>", data = "<form>")]
 pub async fn update(
     user: User,
     sites_data: &State<SitesMap>,
@@ -190,7 +190,7 @@ pub async fn update(
     Ok(Redirect::to(format!("/")))
 }
 
-#[delete("/sites/delete/<id>")]
+#[get("/sites/delete/<id>")]
 pub async fn delete(
     user: User,
     sites_data: &State<SitesMap>,
