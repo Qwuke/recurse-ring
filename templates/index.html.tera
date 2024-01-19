@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>The Recurse Webring</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="/static/ring.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="/ring.js" type="text/javascript"></script>
   </head>
   <body>
     <h1>The Recurse Webring</h1>
@@ -41,12 +41,12 @@
                       <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
                   </fieldset>
               </form>
-              <p>Now all you need to do is add the anchor link script at <code>http://ring.recurse.com/ring.js</code> in your header element like so:
+              <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
                 <br>
                 <code><textarea cols="90" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
-        &lt;script src="https://ring.recurse.com/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;</textarea></code>
               </p>
@@ -73,11 +73,11 @@
       <h2>Awesome! You've added your site to the webring.</h2>
 
       <br>
-      <p>Now all you need to do is add the anchor link script at <code>http://ring.recurse.com/ring.js</code> in your header element like so:</p>
+      <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:</p>
       <pre><code><textarea cols="90" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
-        &lt;script src="https://ring.recurse.com/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;</textarea></code></pre>
       <br>
@@ -117,7 +117,7 @@
     <br>
     <br>
     <div><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></div>
-    <div><a id="rc-ring-home" href="https://ring.recurse.com/">The Recurse Webring</a></div>
+    <div><a id="rc-ring-home" data-rc-uuid="0cccc0a0-fa92-4c1a-8da2-b22817103c36" href="https://ring.recurse.com/">The Recurse Webring</a></div>
     <div><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></div>
     <div><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></div>
   </body>
