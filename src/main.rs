@@ -6,13 +6,14 @@ use rand::{thread_rng, Rng};
 use reqwest::Client;
 use rocket::{
     fs::{relative, FileServer},
-    http::{Cookie, CookieJar, Status},
+    http::{Cookie, CookieJar, Status, Method},
     request,
     request::{FromRequest, Outcome},
     response::Redirect,
     serde::{json::Json, Deserialize, Serialize},
     Config, State,
 };
+use rocket_cors::{AllowedOrigins, CorsOptions};
 use rocket_dyn_templates::{context, Template};
 use std::collections::BTreeMap;
 use std::ops::Bound;
@@ -39,7 +40,7 @@ struct ClientTokens {
     github_secret: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 struct SiteData {
     website_id: u32,
     website_uuid: String,
@@ -50,7 +51,7 @@ struct SiteData {
     url: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 struct User {
     pub id: u32,
     pub name: String,
@@ -116,25 +117,28 @@ async fn get_named_sites(
     let mut sites_with_names = Vec::new();
 
     for site in unnamed_sites {
-        if site.website_id != 0 {
-            let response = Client::new()
-                .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
-                .bearer_auth(bearer_token)
-                .send().await?;
-            let res = response.text().await?;
-            let Ok(user) = serde_json::from_str::<User>(res.as_str()) else {
-                return Ok(Vec::new());
-            };
-
-            sites_with_names.push(SiteData {
-                website_id: site.website_id,
-                website_uuid: site.website_uuid,
-                recurse_id: site.recurse_id,
-                website_name: site.website_name,
-                recurse_name: Some(user.name),
-                url: site.url,
-            });
-        }
+        let user_name = match site.recurse_id {
+            0 => "Not A Real Recurser".to_string(),
+            _ => {
+                let response = Client::new()
+                    .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
+                    .bearer_auth(bearer_token)
+                    .send().await?;
+                let res = response.text().await?;
+                let name = serde_json::from_str::<User>(res.as_str())
+                    .map(|user| user.name);
+                name.unwrap_or("Not A Real Recurser".to_string())
+            }
+        };
+        
+        sites_with_names.push(SiteData {
+            website_id: site.website_id,
+            website_uuid: site.website_uuid,
+            recurse_id: site.recurse_id,
+            website_name: site.website_name,
+            recurse_name: Some(user_name),
+            url: site.url,
+        });
     }
 
     Ok(sites_with_names)
@@ -177,28 +181,28 @@ fn logout(_user: User, cookies: &CookieJar<'_>) -> Redirect {
     Redirect::to("/")
 }
 
-#[get("/prev?<requested_id>")]
-async fn prev(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
+#[get("/prev?<id>")]
+async fn prev(id: u32, sites_data: &State<SitesMap>) -> Redirect {
     let readable_sites = sites_data.read().await;
     let last_key_value = readable_sites
         .last_key_value()
         .expect("Should always have the last site to wrap around to");
     let (_actual_id, prev_site) = readable_sites
-        .lower_bound(Bound::Excluded(&requested_id))
+        .upper_bound(Bound::Excluded(&id))
         .key_value()
         .unwrap_or(last_key_value);
 
     Redirect::to(prev_site.url.clone())
 }
 
-#[get("/next?<requested_id>")]
-async fn next(requested_id: u32, sites_data: &State<SitesMap>) -> Redirect {
+#[get("/next?<id>")]
+async fn next(id: u32, sites_data: &State<SitesMap>) -> Redirect {
     let readable_sites = sites_data.read().await;
     let first_key_value = readable_sites
         .first_key_value()
         .expect("Should always have the first site to wrap around to");
     let (_actual_id, next_site) = readable_sites
-        .upper_bound(Bound::Excluded(&requested_id))
+        .lower_bound(Bound::Excluded(&id))
         .key_value()
         .unwrap_or(first_key_value);
 
@@ -256,10 +260,22 @@ async fn rocket() -> _ {
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>();
 
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch]
+                .into_iter()
+                .map(From::from)
+                .collect())
+        .allow_credentials(true)
+        .to_cors()
+        .expect("CORS options should be valid");
+
     rocket::build()
         .manage(Mutex::new(octocrab))
         .manage(Mutex::new(config))
         .manage(RwLock::new(ordered_sites) as SitesMap)
+        .attach(cors)
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))

@@ -14,55 +14,56 @@
     <h3>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
     <ul>
         {% for site in sites -%}
+          {% if site.recurse_id != 0 %}
           <li><a href="{{site.url}}">{{site.website_name}}</a> by {{site.recurse_name}}
-          {% if user and user.id == site.recurse_id %}
-            <input type='checkbox' style='display: none' id="cb{{loop.index}}">
-            <button for="cb{{loop.index}}" type="button">
-              <label for="cb{{loop.index}}"> </label>
-            </button>
-            <div>
-              <form action="/sites/update/{{site.website_id}}" method="post">
-                  <fieldset>
-                    <legend>Website Info</legend>
-                      <label for="name">Website Name</label>
-                      <input type="text"
-                          name="name"
-                          id="name"
-                          value="{{site.website_name}}"
-                      />
-                      <label for="domain">Website Domain</label>
-                      <input type="url"
-                          placeholder="https://... or http://..."
-                          name="url"
-                          id="url"
-                          value="{{site.url}}"
-                      />
-                      <input type="submit" formenctype="multipart/form-data" value="Update">
-                      <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
-                  </fieldset>
-              </form>
-              <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
-                <br>
-                <code><textarea cols="90" rows="5" readonly>
+            {% if user and user.id == site.recurse_id %}
+              <input type='checkbox' style='display: none' id="cb{{loop.index}}">
+              <button for="cb{{loop.index}}" type="button">
+                <label for="cb{{loop.index}}"> </label>
+              </button>
+              <div>
+                <form action="/sites/update/{{site.website_id}}" method="post">
+                    <fieldset>
+                      <legend>Website Info</legend>
+                        <label for="name">Website Name</label>
+                        <input type="text"
+                            name="name"
+                            id="name"
+                            value="{{site.website_name}}"
+                        />
+                        <label for="domain">Website Domain</label>
+                        <input type="url"
+                            placeholder="https://... or http://..."
+                            name="url"
+                            id="url"
+                            value="{{site.url}}"
+                        />
+                        <input type="submit" formenctype="multipart/form-data" value="Update">
+                        <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
+                    </fieldset>
+                </form>
+                <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
+                  <br>
+                  <code><textarea cols="90" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;</textarea></code>
-              </p>
-              <p>And then add these 4 HTML elements to the body of your page:
-                <br> 
-                <code><textarea cols="140" rows="4" readonly>
+                </p>
+                <p>And then add these 4 HTML elements to the body of your page:
+                  <br> 
+                  <code><textarea cols="140" rows="4" readonly>
 &lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{site.website_id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{site.website_uuid}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-next" href="https://ring.recurse.com/next?id={{site.website_id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;</textarea></code>
-              </p>
-              <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
-            </div>
+                </p>
+                <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
+              </div>
+            {% endif %}
+            </li>
           {% endif %}
-          </li>
-
         {%- endfor %}
     </ul>
     {% if user %}

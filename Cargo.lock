@@ -1670,6 +1670,7 @@ dependencies = [
  "rand",
  "reqwest",
  "rocket",
+ "rocket_cors",
  "rocket_dyn_templates",
  "rocket_oauth2",
  "serde",
@@ -1865,6 +1866,20 @@ dependencies = [
  "syn 2.0.39",
  "unicode-xid",
  "version_check",
+]
+
+[[package]]
+name = "rocket_cors"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfac3a1df83f8d4fc96aa41dba3b86c786417b7fc0f52ec76295df2ba781aa69"
+dependencies = [
+ "http",
+ "log",
+ "regex",
+ "rocket",
+ "unicase",
+ "url",
 ]
 
 [[package]]
@@ -2745,6 +2760,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96bd2f2237fe450fcd0a1d2f5f4e91711124f7857ba2e964247776ebeeb7b0c4"
 dependencies = [
  "unic-common",
+]
+
+[[package]]
+name = "unicase"
+version = "2.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f7d2d4dafb69621809a81864c9c1b864479e1235c0dd4e199924b9742439ed89"
+dependencies = [
+ "version_check",
 ]
 
 [[package]]
