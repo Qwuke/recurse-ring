@@ -89,5 +89,12 @@
     "recurse_id": 5891,
     "website_name": "Nick Chen's blog",
     "url": "https://blog.nicholaschen.io"
+  },
+  {
+    "website_id": 18,
+    "website_uuid": "664dc07d-627a-44d0-a903-384e1fcdcfc4",
+    "recurse_id": 5928,
+    "website_name": "julipode",
+    "url": "https://julipode.net"
   }
 ]
