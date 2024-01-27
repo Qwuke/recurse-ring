@@ -96,5 +96,12 @@
     "recurse_id": 5928,
     "website_name": "julipode",
     "url": "https://julipode.net"
+  },
+  {
+    "website_id": 19,
+    "website_uuid": "16d4b09f-c4a5-400d-98df-10ac825aba1c",
+    "recurse_id": 5822,
+    "website_name": "Status Update",
+    "url": "https://hazure.neocities.org/articles/"
   }
 ]
