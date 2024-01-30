@@ -110,5 +110,13 @@
     "website_name": "julipode",
     "is_anonymous": false,
     "url": "https://julipode.net"
+  },
+  {
+    "website_id": 19,
+    "website_uuid": "0458502d-045a-40e3-b7f6-6d4e9e8f6dd3",
+    "recurse_id": 5822,
+    "website_name": "Hazure!",
+    "is_anonymous": true,
+    "url": "https://hazure.neocities.org"
   }
 ]
