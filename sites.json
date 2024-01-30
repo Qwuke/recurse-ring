@@ -4,6 +4,7 @@
     "website_uuid": "0cccc0a0-fa92-4c1a-8da2-b22817103c36",
     "recurse_id": 0,
     "website_name": "Other Recurse Webring",
+    "is_anonymous": false,
     "url": "https://ring.recurse.com"
   },
   {
@@ -11,6 +12,7 @@
     "website_uuid": "b101da00-3999-4c31-84b8-491093f49a79",
     "recurse_id": 5993,
     "website_name": "Tristan's Blog",
+    "is_anonymous": false,
     "url": "https://qwu.ke"
   },
   {
@@ -18,6 +20,7 @@
     "website_uuid": "cc018fe3-8c02-4ca8-ade8-36cdc5a5561d",
     "recurse_id": 5910,
     "website_name": "Greg's Blog",
+    "is_anonymous": false,
     "url": "https://blog.greg.technology/"
   },
   {
@@ -25,6 +28,7 @@
     "website_uuid": "b32df867-8f93-49b3-9d78-3914aaebf86f",
     "recurse_id": 5977,
     "website_name": "Craftinatorics",
+    "is_anonymous": false,
     "url": "https://craftinatorics.com/"
   },
   {
@@ -32,6 +36,7 @@
     "website_uuid": "e6c4953c-8c04-42a4-8252-6df74ce6927f",
     "recurse_id": 5774,
     "website_name": "Jacob Vosmaer's blog",
+    "is_anonymous": false,
     "url": "https://blog.jacobvosmaer.nl"
   },
   {
@@ -39,6 +44,7 @@
     "website_uuid": "f916420d-c0de-4840-b3e3-a6fd96e43019",
     "recurse_id": 5218,
     "website_name": "veryth.ink",
+    "is_anonymous": false,
     "url": "https://veryth.ink"
   },
   {
@@ -46,6 +52,7 @@
     "website_uuid": "7e80e239-09f8-45cf-869b-797705e8490a",
     "recurse_id": 3873,
     "website_name": "Evan's Site",
+    "is_anonymous": false,
     "url": "https://evanconway.github.io/"
   },
   {
@@ -53,6 +60,7 @@
     "website_uuid": "a76734eb-cb49-474c-98b1-931ffaece763",
     "recurse_id": 5687,
     "website_name": "Reuben Blarg",
+    "is_anonymous": false,
     "url": "https://reubenson.com/recurse/"
   },
   {
@@ -60,6 +68,7 @@
     "website_uuid": "8a57f8aa-2879-42d0-b394-66ccf4e17a39",
     "recurse_id": 5988,
     "website_name": "And Another Player Yet To Be Named",
+    "is_anonymous": false,
     "url": "http://aristobit.com/blog"
   },
   {
@@ -67,6 +76,7 @@
     "website_uuid": "57c02448-2deb-4e36-b6f1-92441549fafb",
     "recurse_id": 3265,
     "website_name": "Revenge of the Anti-Penguin",
+    "is_anonymous": false,
     "url": "https://www.scannedinavian.com/"
   },
   {
@@ -74,6 +84,7 @@
     "website_uuid": "1e1944da-febd-4837-b91b-96daa83a661f",
     "recurse_id": 5908,
     "website_name": "Jacob's Blog",
+    "is_anonymous": false,
     "url": "https://jry.io/writing"
   },
   {
@@ -81,6 +92,7 @@
     "website_uuid": "31bbebb6-fcf9-4319-b7d6-ce66bbfa9a41",
     "recurse_id": 5884,
     "website_name": "Kenny.wtf",
+    "is_anonymous": false,
     "url": "https://kenny.wtf"
   },
   {
@@ -88,6 +100,7 @@
     "website_uuid": "f53cf6e6-58ab-4be5-88ca-7ab639d7069d",
     "recurse_id": 5891,
     "website_name": "Nick Chen's blog",
+    "is_anonymous": false,
     "url": "https://blog.nicholaschen.io"
   },
   {
@@ -95,6 +108,15 @@
     "website_uuid": "664dc07d-627a-44d0-a903-384e1fcdcfc4",
     "recurse_id": 5928,
     "website_name": "julipode",
+    "is_anonymous": false,
     "url": "https://julipode.net"
+  },
+  {
+    "website_id": 19,
+    "website_uuid": "156a5f4b-5844-4973-a10c-f2b58bab3328",
+    "recurse_id": 5993,
+    "website_name": "I'm anonymous!",
+    "is_anonymous": true,
+    "url": "https://qwu.ke/anonymous"
   }
 ]
