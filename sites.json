@@ -116,7 +116,7 @@
     "website_uuid": "156a5f4b-5844-4973-a10c-f2b58bab3328",
     "recurse_id": 5993,
     "website_name": "I'm anonymous!",
-    "is_anonymous": true,
+    "is_anonymous": false,
     "url": "https://qwu.ke/anonymous"
   }
 ]
