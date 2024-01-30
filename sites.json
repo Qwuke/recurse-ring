@@ -110,13 +110,5 @@
     "website_name": "julipode",
     "is_anonymous": false,
     "url": "https://julipode.net"
-  },
-  {
-    "website_id": 19,
-    "website_uuid": "156a5f4b-5844-4973-a10c-f2b58bab3328",
-    "recurse_id": 5993,
-    "website_name": "I'm anonymous!",
-    "is_anonymous": true,
-    "url": "https://qwu.ke/anonymous"
   }
 ]
