@@ -15,7 +15,15 @@
     <ul>
         {% for site in sites -%}
           {% if site.recurse_id != 0 %}
-          <li><a href="{{site.url}}">{{site.website_name}}</a> by {{site.recurse_name}}
+          <li><a href="{{site.url}}">{{site.website_name}}</a> by 
+            {% if site.is_anonymous %}
+              a Recurser
+              {% if user %}
+              ({{site.recurse_name}}, who wishes to remain anonymous 😊)
+              {% endif %}  
+            {% else %}
+              {{site.recurse_name}}
+            {% endif %}
             {% if user and user.id == site.recurse_id %}
               <input type='checkbox' style='display: none' id="cb{{loop.index}}">
               <button for="cb{{loop.index}}" type="button">
@@ -38,13 +46,21 @@
                             id="url"
                             value="{{site.url}}"
                         />
+                        <label for="is_anonymous">Check this box to hide your real name from non-Recursers</label>
+                        <input type="checkbox"
+                            name="is_anonymous"
+                            id="is_anonymous"
+                            {% if site.is_anonymous %}
+                              checked
+                            {% endif %}
+                        />
                         <input type="submit" formenctype="multipart/form-data" value="Update">
                         <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
                     </fieldset>
                 </form>
                 <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
                   <br>
-                  <code><textarea cols="90" rows="5" readonly>
+                  <code><textarea cols="140" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
@@ -75,7 +91,7 @@
 
       <br>
       <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:</p>
-      <pre><code><textarea cols="90" rows="5" readonly>
+      <pre><code><textarea cols="140" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
@@ -106,6 +122,11 @@
                   placeholder="https://... or http://..."
                   name="url"
                   id="url"
+              />
+              <label for="is_anonymous">Check this box to hide your real name from non-Recursers</label>
+              <input type="checkbox"
+                name="is_anonymous"
+                id="is_anonymous"
               />
               <input type="submit" value="Submit">
           </fieldset>

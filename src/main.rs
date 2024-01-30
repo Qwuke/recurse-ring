@@ -48,6 +48,8 @@ struct SiteData {
     website_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     recurse_name: Option<String>,
+    #[serde(default)]
+    is_anonymous: bool,
     url: String,
 }
 
@@ -63,7 +65,7 @@ type SitesMap = RwLock<BTreeMap<u32, SiteData>>;
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for User {
     type Error = ();
-
+    
     async fn from_request(request: &'r request::Request<'_>) -> Outcome<User, ()> {
         let cookies = request
             .guard::<&CookieJar<'_>>().await
@@ -137,6 +139,7 @@ async fn get_named_sites(
             recurse_id: site.recurse_id,
             website_name: site.website_name,
             recurse_name: Some(user_name),
+            is_anonymous: site.is_anonymous,
             url: site.url,
         });
     }

@@ -31,6 +31,8 @@ pub struct WebsiteSignup {
     name: String,
     #[field(validate = valid_domain())]
     url: String,
+    #[form(default = "false")]
+    is_anonymous: bool,
 }
 
 fn valid_domain<'v>(input_url: &str) -> form::Result<'v, ()> {
@@ -124,6 +126,7 @@ pub async fn add(
         recurse_id: user.id,
         website_name: form.name.clone(),
         recurse_name: None,
+        is_anonymous: form.is_anonymous,
         url: form.url.clone(),
     };
     recurse_sites.push(new_site);
@@ -168,7 +171,11 @@ pub async fn update(
     let updated_site = SiteData {
         website_name: form.name.clone(),
         url: form.url.clone(),
-        ..current_site
+        is_anonymous: form.is_anonymous,
+        website_id: current_site.website_id,
+        website_uuid: current_site.website_uuid,
+        recurse_id: current_site.recurse_id,
+        recurse_name: current_site.recurse_name,
     };
     recurse_sites.push(updated_site);
     recurse_sites.sort_by(|a, b| {
