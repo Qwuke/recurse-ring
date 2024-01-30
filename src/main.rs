@@ -2,7 +2,7 @@
 use anyhow::{anyhow, Context, Result};
 use figment::{providers::Env, Figment};
 use octocrab::{models::repos::Content, Octocrab};
-use rand::{thread_rng, Rng};
+use rand::{thread_rng, Rng, prelude::SliceRandom};
 use reqwest::Client;
 use rocket::{
     fs::{relative, FileServer},
@@ -151,12 +151,15 @@ async fn authed(
     id: Option<u32>,
     uuid_str: Option<String>,
 ) -> Template {
-    let recurse_sites = sites_data
+    let mut recurse_sites = sites_data
         .read().await
         .values()
         .cloned()
         .collect::<Vec<SiteData>>();
 
+    let mut rng = thread_rng();
+    recurse_sites.shuffle(&mut rng);
+    
     Template::render(
         "index",
         context! { sites: recurse_sites, user, id, uuid_str })
@@ -164,11 +167,14 @@ async fn authed(
 
 #[get("/", rank = 2)]
 async fn home(sites_data: &State<SitesMap>) -> Template {
-    let recurse_sites = sites_data
+    let mut recurse_sites = sites_data
         .read().await
         .values()
         .cloned()
         .collect::<Vec<SiteData>>();
+
+    let mut rng = thread_rng();
+    recurse_sites.shuffle(&mut rng);
 
     Template::render("index", context! { sites: recurse_sites })
 }
