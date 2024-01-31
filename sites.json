@@ -118,5 +118,13 @@
     "website_name": "Hazure!",
     "is_anonymous": true,
     "url": "https://hazure.neocities.org"
+  },
+  {
+    "website_id": 20,
+    "website_uuid": "18cbd447-04ad-4318-905a-9e8a36a0aa81",
+    "recurse_id": 5344,
+    "website_name": "Technically a Blog",
+    "is_anonymous": false,
+    "url": "https://ntietz.com"
   }
 ]
