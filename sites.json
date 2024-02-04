@@ -118,5 +118,13 @@
     "website_name": "Hazure!",
     "is_anonymous": true,
     "url": "https://hazure.neocities.org"
+  },
+  {
+    "website_id": 20,
+    "website_uuid": "531a8181-9979-48b1-b5df-2b29483beb2f",
+    "recurse_id": 4188,
+    "website_name": "Mikkel's blog",
+    "is_anonymous": false,
+    "url": "https://mikkel.ca/"
   }
 ]
