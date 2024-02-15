@@ -10,9 +10,53 @@
     <script src="/ring.js" type="text/javascript"></script>
   </head>
   <body>
-    <h1>The Recurse Webring</h1>
-    <h3>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
-    <ul>
+    <h1><a id="rc-ring-home" data-rc-uuid="0cccc0a0-fa92-4c1a-8da2-b22817103c36">The Recurse Webring</a></h1>
+    <table width="400" border="0">
+      <tr>
+        <td><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></td>
+        <td><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></td>
+        <td><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></td>
+      </tr>
+    </table>
+
+    <h2>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
+
+    <h3>What is a webring?</h3>
+    A webring is a collection of websites linked together in a circular structure, usually focused around a specific topic or community.<br> 
+    Webrings appear as a widget on the bottom of a website, with buttons linking to the next and previous websites in the ring.<br> 
+    The popularity of webrings peaked in the late 1990s and early 2000s, but have made <a href="https://brisray.com/web/webring-history.htm">a modern resurgence</a>.
+
+    <h3>Why use a webring?</h3>
+    Search engines algorithms have always been opaque, but <a href="https://downloads.webis.de/publications/papers/bevendorff_2024a.pdf">it's becoming harder</a> to discover relevant websites using search engines.<br>
+    The web is one of the most important inventions in our lives, but commercial entities are not aligned with making it worthwhile to us.<br>
+    Webrings represent a fun, soothing way to share and find meaningful websites that will never be subject to <a href="https://en.wikipedia.org/wiki/Enshittification">enshittification<a>. 
+
+    <h3>How do I use this webring?</h3>
+    This webring is for alumni of the <a href="https://www.recurse.com/">Recurse Center</a>, which hosts retreats for kind and curious programmers.<br>
+    If you are alumni or in are currently batch, you can submit your website after clicking "Login" at the bottom of the page.<br>
+    It is <strong>required</strong> to include the generated links to Recurser sites on the page you submit, but you may style them any way you want.<br>
+    Surf the ring for styling examples and be safe on the internet!
+
+    {% if user and id %}
+      <h2>Awesome! You've added your site to the webring.</h2>
+
+      <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
+      <pre><code><textarea cols="140" rows="5" readonly>
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+&lt;/html&gt;</textarea></code></pre>
+      <p>And then add these 4 HTML elements to the body of your page: </p>
+      <pre><code><textarea cols="140" rows="4" readonly>
+&lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{uuid_str}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;a id="rc-ring-next" href="https://ring.recurse.com/next?id={{id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;</textarea></code></pre>
+      <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
+    {% endif %}
+
+    <h2>Website directory</h2><ul>
         {% for site in sites -%}
           {% if site.recurse_id != 0 %}
           <li><a href="{{site.url}}">{{site.website_name}}</a> by 
@@ -54,11 +98,12 @@
                               checked
                             {% endif %}
                         />
+                        &nbsp;&nbsp;&nbsp;
                         <input type="submit" formenctype="multipart/form-data" value="Update">
                         <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
                     </fieldset>
                 </form>
-                <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
+                <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
                   <br>
                   <code><textarea cols="140" rows="5" readonly>
 &lt;html&gt;
@@ -83,31 +128,6 @@
         {%- endfor %}
     </ul>
     {% if user %}
-      <br>
-      {% if id %}
-      <br>
-      <br>
-      <h2>Awesome! You've added your site to the webring.</h2>
-
-      <br>
-      <p>Now all you need to do is add the anchor link script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:</p>
-      <pre><code><textarea cols="140" rows="5" readonly>
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;/head&gt;
-&lt;/html&gt;</textarea></code></pre>
-      <br>
-      <p>And then add these 4 HTML elements to the body of your page: </p>
-      <pre><code><textarea cols="140" rows="4" readonly>
-&lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
-&lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{uuid_str}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
-&lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
-&lt;div&gt;&lt;a id="rc-ring-next" href="https://ring.recurse.com/next?id={{id}}"&gt;Next&lt;/a&gt;&lt;/div&gt;</textarea></code></pre>
-      <br>
-      <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
-      {% endif %}
-      <br>
       <h2>Want to add your own site?</h3>
       <form action="/sites/add" method="post" enctype="multipart/form-data">
           <fieldset>
@@ -117,17 +137,20 @@
                   name="name"
                   id="name"
               />
+              &nbsp;&nbsp;&nbsp;
               <label for="domain">Website Domain</label>
               <input type="url"
                   placeholder="https://... or http://..."
                   name="url"
                   id="url"
               />
-              <label for="is_anonymous">Check this box to hide your real name from non-Recursers</label>
+              <br>
+              <label for="is_anonymous">Hide your real name from non-Recursers</label>
               <input type="checkbox"
                 name="is_anonymous"
                 id="is_anonymous"
               />
+              &nbsp;&nbsp;&nbsp;
               <input type="submit" value="Submit">
           </fieldset>
       </form>
@@ -137,10 +160,5 @@
       <div><a href="/auth/login">Login</a></div>
     {% endif %}
     <br>
-    <br>
-    <div><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></div>
-    <div><a id="rc-ring-home" data-rc-uuid="0cccc0a0-fa92-4c1a-8da2-b22817103c36" href="https://ring.recurse.com/">The Recurse Webring</a></div>
-    <div><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></div>
-    <div><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></div>
   </body>
 </html>
