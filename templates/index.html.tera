@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width">
     <title>The Recurse Webring</title>
     <link rel="stylesheet" href="/styles.css">
+    <!-- ..."This Website Uses No CSS"? Well, I lied! But only because I'm waiting for a better HTML-only accordion interface: --> 
+    <!-- TODO: Remove CSS after Popover API support is widespread: https://developer.mozilla.org/en-US/docs/Web/API/Popover_API -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script src="/ring.js" type="text/javascript"></script>
   </head>

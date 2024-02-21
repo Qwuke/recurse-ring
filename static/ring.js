@@ -6,15 +6,20 @@ function replace_hrefs(data) {
   var home = document.getElementById("rc-ring-home");
   var prev = document.getElementById("rc-ring-prev");
   var next = document.getElementById("rc-ring-next");
+  var rand = document.getElementById("rc-ring-rand");
 
   var currentUuid = home.getAttribute("data-rc-uuid");
   var currentIndex = data.findIndex((site) => site.website_uuid === currentUuid);
 
   var prevSite = data[mod((currentIndex - 1), data.length)];
   var nextSite = data[mod((currentIndex + 1), data.length)];
-  
+  var randSite = data[Math.floor(Math.random() * data.length)];
+
   next.setAttribute("href", nextSite.url);
   prev.setAttribute("href", prevSite.url);
+  if (rand != null) {
+    rand.setAttribute("href", randSite.url);
+  }
 }
 
 window.onload = (_event) => {
