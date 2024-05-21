@@ -174,13 +174,5 @@
     "website_name": "cindy's website",
     "is_anonymous": false,
     "url": "https://www.cindy-wu.com"
-  },
-  {
-    "website_id": 28,
-    "website_uuid": "94d04852-8c24-4065-baed-0c2569a54bfc",
-    "recurse_id": 5820,
-    "website_name": "pjg1.site",
-    "is_anonymous": false,
-    "url": "https://pjg1.site"
   }
 ]
