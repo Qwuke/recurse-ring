@@ -190,5 +190,13 @@
     "website_name": "food co-op dot gay",
     "is_anonymous": false,
     "url": "http://foodcoop.gay"
+  },
+  {
+    "website_id": 30,
+    "website_uuid": "1b5455c6-ba54-4a81-b65b-65b9d3656425",
+    "recurse_id": 1978,
+    "website_name": "Krace's Blog",
+    "is_anonymous": false,
+    "url": "https://kracekumar.com"
   }
 ]
