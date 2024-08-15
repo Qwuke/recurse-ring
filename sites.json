@@ -206,13 +206,5 @@
     "website_name": "Joachim.work",
     "is_anonymous": false,
     "url": "http://joachim.work/"
-  },
-  {
-    "website_id": 32,
-    "website_uuid": "49ed3972-dd3f-4e23-96d8-bb85e929cb1d",
-    "recurse_id": 4668,
-    "website_name": "a place on the internet",
-    "is_anonymous": true,
-    "url": "https://ts00ey.bearblog.dev/"
   }
 ]
