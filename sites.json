@@ -182,13 +182,5 @@
     "website_name": "vinayak.io",
     "is_anonymous": false,
     "url": "https://vinayak.io"
-  },
-  {
-    "website_id": 36,
-    "website_uuid": "f6448454-bc04-4fb2-8c4e-363989a2f3f2",
-    "recurse_id": 6232,
-    "website_name": "Winston's site",
-    "is_anonymous": false,
-    "url": "https://www.winstoncooke.com/"
   }
 ]
