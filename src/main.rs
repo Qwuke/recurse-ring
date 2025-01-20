@@ -35,7 +35,7 @@ const _RECURSE_TOKEN_URL: &str = "https://www.recurse.com/oauth/token";
 
 #[derive(Deserialize)]
 struct ClientTokens {
-    recurse_client_id: String,
+    _recurse_client_id: String,
     recurse_secret: String,
     github_secret: String,
 }
