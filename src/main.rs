@@ -119,19 +119,15 @@ async fn get_named_sites(
     let mut sites_with_names = Vec::new();
 
     for site in unnamed_sites {
-        let user_name = match site.recurse_id {
-            0 => "Not A Real Recurser".to_string(),
-            _ => {
-                let response = Client::new()
-                    .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
-                    .bearer_auth(bearer_token)
-                    .send().await?;
-                let res = response.text().await?;
-                let name = serde_json::from_str::<User>(res.as_str())
-                    .map(|user| user.name);
-                name.unwrap_or("Not A Real Recurser".to_string())
-            }
-        };
+        let response = Client::new()
+            .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
+            .bearer_auth(bearer_token)
+            .send().await?;
+        let res = response.text().await?;
+    
+        let user_name = serde_json::from_str::<User>(res.as_str())
+            .map(|user| user.name)
+            .unwrap_or("Not A Real Recurser".to_string());
         
         sites_with_names.push(SiteData {
             website_id: site.website_id,
