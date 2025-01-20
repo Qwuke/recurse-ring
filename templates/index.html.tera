@@ -64,15 +64,16 @@
 ╚███╔███╔╝███████╗██████╔╝██║  ██║██║██║ ╚████║╚██████╔╝ 
  ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝</code></pre></a>
     <hr align="left" width="400">
-    <table width="400" border="0">
+    <!--<table width="400" border="0">
       <tr>
         <td><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></td>
         <td><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></td>
         <td><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></td>
       </tr>
-    </table>
-
-    <h2>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
+    </table> -->
+    <h3><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Click here to start exploring a random Recurser site!</a></h3>
+    <br>
+    <h2>About the <a href="https://recurse.com">Recurse Center</a> Web Ring</h2>
 
     <h3>What is a webring?</h3>
     A webring is a collection of websites linked together in a circular structure, usually focused around a specific topic or community.<br> 
