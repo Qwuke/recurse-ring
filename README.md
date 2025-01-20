@@ -1,6 +1,8 @@
 # Recurse Center Webring
 
-The Recurse Web Ring is a hosted web service for *automatically* linking websites in a ring data structure, and optionally provides a JavaScript file for allowing sites to link directly to their ring neighbor. The hosted option allows automatic ring neighbor updates for sites and users that don't run any JavaScript, especially as a fallback, while the JavaScript file option allows users to hover over webring links before deciding to click to their neighbors.
+The Recurse Web Ring is a hosted web service for *automatically* linking websites in a ring data structure, and optionally provides a JavaScript file for allowing sites to link directly to their ring neighbor. 
+
+The hosted option allows automatic ring neighbor updates for sites and users that don't run any JavaScript, especially as a fallback, while the JavaScript file option allows users to hover over webring links before deciding to click to their neighbors.
 
 ## Rules
 
