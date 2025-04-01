@@ -262,5 +262,13 @@
     "website_name": "Adrien's personal site",
     "is_anonymous": false,
     "url": "https://aadriien.github.io"
+  },
+  {
+    "website_id": 49,
+    "website_uuid": "e33a8926-c382-4b7e-a672-57100bd5d2a9",
+    "recurse_id": 6747,
+    "website_name": "Adrien's personal site",
+    "is_anonymous": false,
+    "url": "https://aadriien.github.io"
   }
 ]
