@@ -262,5 +262,13 @@
     "website_name": "Adrien's personal site",
     "is_anonymous": false,
     "url": "https://aadriien.github.io"
+  },
+  {
+    "website_id": 50,
+    "website_uuid": "b56124b8-ce1f-45f1-9e7f-a21268aebe1c",
+    "recurse_id": 6725,
+    "website_name": "hi, i’m funmi",
+    "is_anonymous": false,
+    "url": "https://missfunmi.com"
   }
 ]
