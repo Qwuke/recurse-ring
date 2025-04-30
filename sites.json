@@ -276,7 +276,7 @@
     "website_uuid": "c18f3780-aa13-40d7-9a79-6d280b0c068f",
     "recurse_id": 4264,
     "website_name": "fauxtrots",
-    "is_anonymous": true,
+    "is_anonymous": false,
     "url": "https://www.fauxtrots.com"
   }
 ]
