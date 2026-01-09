@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -13,8 +13,8 @@
   </head>
   <body>
   <a id="rc-ring-home" data-rc-uuid="0cccc0a0-fa92-4c1a-8da2-b22817103c36"
-  aria-label="An ASCII art Recurse Center Logo with ASCII art text that reads 'Recurse Center'"
-  title="An ASCII art Recurse Center Logo with ASCII art text that reads 'Recurse Center'">
+  aria-label="An ASCII art Recurse Center Logo with ASCII art text that reads 'Recurse Webring'"
+  title="An ASCII art Recurse Center Logo with ASCII art text that reads 'Recurse Webring'">
 <pre><code>███████████████████████████████████████████████████████       
 ███████████████████████████████████████████████████████
 ███████████████████████████████████████████████████████
@@ -64,15 +64,16 @@
 ╚███╔███╔╝███████╗██████╔╝██║  ██║██║██║ ╚████║╚██████╔╝ 
  ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝</code></pre></a>
     <hr align="left" width="400">
-    <table width="400" border="0">
+    <!--<table width="400" border="0">
       <tr>
         <td><a id="rc-ring-prev" href="https://ring.recurse.com/prev?id=0">Previous Site</a></td>
         <td><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Random Recurser</a></td>
         <td><a id="rc-ring-next" href="https://ring.recurse.com/next?id=0">Next Site</a></td>
       </tr>
-    </table>
-
-    <h2>A webring for the <a href="https://recurse.com">Recurse Center</a> community</h3>
+    </table> -->
+    <h3><a id="rc-ring-rand" href="https://ring.recurse.com/rand">Click here to start exploring a random Recurser site!</a></h3>
+    <br>
+    <h2>About the <a href="https://recurse.com">Recurse Center</a> Web Ring</h2>
 
     <h3>What is a webring?</h3>
     A webring is a collection of websites linked together in a circular structure, usually focused around a specific topic or community.<br> 
@@ -82,7 +83,7 @@
     <h3>Why use a webring?</h3>
     Search engines algorithms have always been opaque, but <a href="https://downloads.webis.de/publications/papers/bevendorff_2024a.pdf">it's becoming harder</a> to discover relevant websites using search engines.<br>
     The web is one of the most important inventions in our lives, but commercial entities are not aligned with making it worthwhile to us.<br>
-    Webrings represent a fun, soothing way to share and find meaningful websites that will never be subject to <a href="https://en.wikipedia.org/wiki/Enshittification">enshittification<a>. 
+    Webrings represent a fun, soothing way to share and find meaningful websites that will never be subject to <a href="https://en.wikipedia.org/wiki/Enshittification">enshittification</a>. 
 
     <h3>How do I use this webring?</h3>
     This webring is for alumni of the <a href="https://www.recurse.com/">Recurse Center</a>, which hosts retreats for kind and curious programmers.<br>
