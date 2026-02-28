@@ -366,5 +366,13 @@
     "website_name": "Johnspace",
     "is_anonymous": false,
     "url": "https://mnky9800n.github.io/"
+  },
+  {
+    "website_id": 68,
+    "website_uuid": "5457b180-8bae-412a-b489-440805856854",
+    "recurse_id": 6782,
+    "website_name": "fredkettelhoit.com",
+    "is_anonymous": false,
+    "url": "https://fredkettelhoit.com"
   }
 ]
