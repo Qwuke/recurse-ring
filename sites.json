@@ -1,13 +1,5 @@
 [
   {
-    "website_id": 0,
-    "website_uuid": "0cccc0a0-fa92-4c1a-8da2-b22817103c36",
-    "recurse_id": 0,
-    "website_name": "Other Recurse Webring",
-    "is_anonymous": false,
-    "url": "https://ring.recurse.com"
-  },
-  {
     "website_id": 1,
     "website_uuid": "b101da00-3999-4c31-84b8-491093f49a79",
     "recurse_id": 5993,
