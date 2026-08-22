@@ -422,5 +422,13 @@
     "website_name": "a.ndr.ooo",
     "is_anonymous": false,
     "url": "https://a.ndr.ooo"
+  },
+  {
+    "website_id": 81,
+    "website_uuid": "cc91a1f4-05c6-4716-8dd6-a4f6a187b45e",
+    "recurse_id": 3525,
+    "website_name": "George Mandis",
+    "is_anonymous": false,
+    "url": "https://george.mand.is"
   }
 ]
