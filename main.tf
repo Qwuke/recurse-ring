@@ -1,4 +1,11 @@
 terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+
   backend "s3" {
     bucket                  = "qwuke-tf-states-s3backend"
     key                     = "recurse-ring/main.tfstate"
@@ -151,6 +158,12 @@ resource "aws_ecs_service" "hello_rocket" {
   task_definition = aws_ecs_task_definition.rocket_task.arn
   launch_type     = "FARGATE"
   desired_count   = 1
+
+  # The live service runs rocket-task:6, registered outside terraform (console);
+  # state only knows :3. Don't let an apply roll production back.
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.rocket_app.arn
