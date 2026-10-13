@@ -93,11 +93,11 @@
     {% if user and id %}
       <h2>Awesome! You've added your site to the webring.</h2>
 
-      <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
+      <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://qwuke.github.io/recurse-ring/static/ring.js</code> in your header element like so:
       <pre><code><textarea cols="140" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
-        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script src="https://qwuke.github.io/recurse-ring/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;</textarea></code></pre>
       <p>And then add these 4 HTML elements to the body of your page: </p>
@@ -156,12 +156,12 @@
                         <input type="submit" formaction="/sites/delete/{{site.website_id}}" formmethod="get" value="Delete">
                     </fieldset>
                 </form>
-                <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
+                <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://qwuke.github.io/recurse-ring/static/ring.js</code> in your header element like so:
                   <br>
                   <code><textarea cols="140" rows="5" readonly>
 &lt;html&gt;
     &lt;head&gt;
-        &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
+        &lt;script src="https://qwuke.github.io/recurse-ring/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
     &lt;/head&gt;
 &lt;/html&gt;</textarea></code>
                 </p>
