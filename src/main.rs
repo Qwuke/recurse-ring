@@ -89,11 +89,11 @@ impl<'r> FromRequest<'r> for User {
     }
 }
 
-async fn get_site_content(octocrab: &Octocrab) -> Result<Content> {
+async fn get_gh_content(octocrab: &Octocrab, path: &str) -> Result<Content> {
     let all_contents = octocrab
         .repos(GH_USER, GH_REPO)
         .get_content()
-        .path(GH_SITES_PATH)
+        .path(path)
         .r#ref("main")
         .send().await?;
 
@@ -101,11 +101,11 @@ async fn get_site_content(octocrab: &Octocrab) -> Result<Content> {
         .items
         .into_iter()
         .next()
-        .ok_or(anyhow!("Missing GitHub content for {}", GH_SITES_PATH))
+        .ok_or(anyhow!("Missing GitHub content for {}", path))
 }
 
 async fn get_deserialized_sites(octocrab: &Octocrab) -> Result<Vec<SiteData>> {
-    let decoded_sites = get_site_content(octocrab).await?
+    let decoded_sites = get_gh_content(octocrab, GH_SITES_PATH).await?
         .decoded_content()
         .ok_or(anyhow!("Could not decode GitHub content"))?;
 
