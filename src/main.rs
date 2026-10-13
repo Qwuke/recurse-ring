@@ -48,6 +48,8 @@ struct SiteData {
     website_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     recurse_name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    recurse_email: Option<String>,
     #[serde(default)]
     is_anonymous: bool,
     url: String,
@@ -58,6 +60,12 @@ struct User {
     pub id: u32,
     pub name: String,
     pub token: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct Profile {
+    name: String,
+    email: Option<String>,
 }
 
 type SitesMap = RwLock<BTreeMap<u32, SiteData>>;
@@ -119,26 +127,27 @@ async fn get_named_sites(
     let mut sites_with_names = Vec::new();
 
     for site in unnamed_sites {
-        let user_name = match site.recurse_id {
-            0 => "Not A Real Recurser".to_string(),
+        let (user_name, user_email) = match site.recurse_id {
+            0 => ("Not A Real Recurser".to_string(), None),
             _ => {
                 let response = Client::new()
                     .get(format!("{}profiles/{}", RECURSE_BASE_URL, site.recurse_id))
                     .bearer_auth(bearer_token)
                     .send().await?;
                 let res = response.text().await?;
-                let name = serde_json::from_str::<User>(res.as_str())
-                    .map(|user| user.name);
-                name.unwrap_or("Not A Real Recurser".to_string())
+                serde_json::from_str::<Profile>(res.as_str())
+                    .map(|profile| (profile.name, profile.email))
+                    .unwrap_or(("Not A Real Recurser".to_string(), None))
             }
         };
-        
+
         sites_with_names.push(SiteData {
             website_id: site.website_id,
             website_uuid: site.website_uuid,
             recurse_id: site.recurse_id,
             website_name: site.website_name,
             recurse_name: Some(user_name),
+            recurse_email: user_email,
             is_anonymous: site.is_anonymous,
             url: site.url,
         });
@@ -238,6 +247,7 @@ async fn dynamic_json(sites_data: &State<SitesMap>) -> Json<Vec<SiteData>> {
         .cloned()
         .map(|mut site| {
             site.recurse_name = None;
+            site.recurse_email = None;
             site })
         .collect::<Vec<SiteData>>();
     Json(serializable_sites)

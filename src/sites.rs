@@ -126,6 +126,7 @@ pub async fn add(
         recurse_id: user.id,
         website_name: form.name.clone(),
         recurse_name: None,
+        recurse_email: None,
         is_anonymous: form.is_anonymous,
         url: form.url.clone(),
     };
@@ -176,6 +177,7 @@ pub async fn update(
         website_uuid: current_site.website_uuid,
         recurse_id: current_site.recurse_id,
         recurse_name: current_site.recurse_name,
+        recurse_email: current_site.recurse_email,
     };
     recurse_sites.push(updated_site);
     recurse_sites.sort_by(|a, b| {
