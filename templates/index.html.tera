@@ -156,7 +156,7 @@
                 </form>
                 <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
                   <br>
-                  <code><textarea cols="140" rows="5" readonly>
+                  <code><textarea cols="56" rows="7" readonly>
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
@@ -165,7 +165,7 @@
                 </p>
                 <p>And then add these 4 HTML elements to the body of your page:
                   <br> 
-                  <code><textarea cols="140" rows="4" readonly>
+                  <code><textarea cols="56" rows="10" readonly>
 &lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{site.website_id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{site.website_uuid}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
