@@ -152,6 +152,7 @@ async fn get_named_sites(
 async fn authed(
     user: User,
     sites_data: &State<SitesMap>,
+    check_log: &State<Mutex<checks::CheckLog>>,
     id: Option<u32>,
     uuid_str: Option<String>,
 ) -> Template {
@@ -164,9 +165,12 @@ async fn authed(
     let mut rng = thread_rng();
     recurse_sites.shuffle(&mut rng);
     
+    // The check log is locked while a check is in progress
+    let checks = check_log.try_lock().ok().map(|log| log.clone());
+
     Template::render(
         "index",
-        context! { sites: recurse_sites, user, id, uuid_str })
+        context! { sites: recurse_sites, user, id, uuid_str, checks })
 }
 
 #[get("/", rank = 2)]

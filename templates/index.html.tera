@@ -109,7 +109,20 @@
       <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
     {% endif %}
 
-    <h2>Website directory</h2><ul>
+    <h2>Website directory</h2>
+    {% if user %}
+      <form action="/sites/check" method="post">
+        {% if checks %}
+          <input type="submit" value="Check sites for webring links"{% if checks.checked_at + 86400 > now(timestamp=true) %} disabled{% endif %}>
+          {% if checks.checked_at > 0 %}
+            Last checked {{checks.checked_at | date(format="%Y-%m-%d %H:%M UTC")}}, sites can be checked once every 24 hours
+          {% endif %}
+        {% else %}
+          <input type="submit" value="Checking sites for webring links..." disabled>
+        {% endif %}
+      </form>
+    {% endif %}
+    <ul>
         {% for site in sites -%}
           {% if site.recurse_id != 0 %}
           <li><a href="{{site.url}}">{{site.website_name}}</a> by 
@@ -120,6 +133,10 @@
               {% endif %}  
             {% else %}
               {{site.recurse_name}}
+            {% endif %}
+            {% if user and checks and checks.statuses[site.website_id] %}
+              {% set status = checks.statuses[site.website_id] %}
+              - <em{% if status == "(Possibly) Non-Compliant" %} title="Please verify before contacting or changing anything"{% endif %}>{{status}}</em>
             {% endif %}
             {% if user and user.id == site.recurse_id %}
               <input type='checkbox' style='display: none' id="cb{{loop.index}}">
