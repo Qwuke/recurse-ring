@@ -176,6 +176,17 @@
                 <p>You can customize the elements in anyway you want - change the 'Prev/Next' text to icons, change <code>div</code>'s to <code>marquee</code>'s - as long as the anchor tags (<code>&lt;a&gt;</code>) with their initial HTML id's are still intact!</p>
               </div>
             {% endif %}
+            {% if user and user.id != site.recurse_id and site.recurse_email %}
+              <a title="Please double check their site first and be kind!"
+                href="mailto:{{site.recurse_email}}?subject={{"Your site on the Recurse Webring" | urlencode_strict}}&body={% filter urlencode_strict %}Hi {{site.recurse_name | safe}},
+
+I was surfing the Recurse Webring and noticed that {{site.url | safe}} might be missing its webring links, which are required for sites in the ring.
+
+You can find them by logging in at https://ring.recurse.com and clicking "Edit or view HTML" next to your site - no worries if I missed something!
+
+Thanks,
+{{user.name | safe}}{% endfilter %}">✉️ Nudge</a>
+            {% endif %}
             </li>
           {% endif %}
         {%- endfor %}
