@@ -19,6 +19,7 @@ use std::collections::BTreeMap;
 use std::ops::Bound;
 use tokio::sync::{Mutex, RwLock};
 
+mod checks;
 mod oauth;
 mod sites;
 
@@ -269,6 +270,9 @@ async fn rocket() -> _ {
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>();
 
+    let check_log = checks::get_check_log(&octocrab).await
+        .unwrap_or_default();
+
     let cors = CorsOptions::default()
         .allowed_origins(AllowedOrigins::all())
         .allowed_methods(
@@ -284,12 +288,13 @@ async fn rocket() -> _ {
         .manage(Mutex::new(octocrab))
         .manage(Mutex::new(config))
         .manage(RwLock::new(ordered_sites) as SitesMap)
+        .manage(Mutex::new(check_log))
         .attach(cors)
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
         .mount("/", routes![authed, home, sites::add, sites::update, 
-            sites::delete, logout, prev, next, random, dynamic_json, health])
+            sites::delete, checks::check, logout, prev, next, random, dynamic_json, health])
         .mount("/", FileServer::from(relative!("static")))
         .mount("/static/", FileServer::from(relative!("static")).rank(3))
 }
