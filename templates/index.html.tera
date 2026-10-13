@@ -122,11 +122,9 @@
               {{site.recurse_name}}
             {% endif %}
             {% if user and user.id == site.recurse_id %}
-              <input type='checkbox' style='display: none' id="cb{{loop.index}}">
-              <button for="cb{{loop.index}}" type="button">
-                <label for="cb{{loop.index}}"> </label>
-              </button>
-              <div>
+              <button popovertarget="edit{{loop.index}}" type="button">👀 Edit or view HTML</button>
+              <div id="edit{{loop.index}}" popover>
+                <button popovertarget="edit{{loop.index}}" popovertargetaction="hide" type="button">👁️👁️ Hide</button>
                 <form action="/sites/update/{{site.website_id}}" method="post">
                     <fieldset>
                       <legend>Website Info</legend>
