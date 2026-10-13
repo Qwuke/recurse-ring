@@ -88,7 +88,8 @@
     This webring is for alumni of the <a href="https://www.recurse.com/">Recurse Center</a>, which hosts retreats for kind and curious programmers.<br>
     If you are alumni or in are currently batch, you can submit your website after clicking "Login" at the bottom of the page.<br>
     It is <strong>required</strong> to include the generated links to Recurser sites on the page you submit, but you may style them any way you want.<br>
-    Surf the ring for styling examples and be safe on the internet!
+    Surf the ring for styling examples and be safe on the internet!<br>
+    If you notice a site missing its links, you can nudge its owner by email once logged in - just please double check their site first and be kind!
 
     {% if user and id %}
       <h2>Awesome! You've added your site to the webring.</h2>
