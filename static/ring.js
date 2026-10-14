@@ -24,8 +24,8 @@ function replace_hrefs(data) {
 
 window.onload = (_event) => {
   var xhr = new XMLHttpRequest();
-  // GitHub Pages redirects qwuke.github.io to qwu.ke without CORS headers, so request qwu.ke directly
-  xhr.open('GET', 'https://qwu.ke/recurse-ring/sites.json', true);
+  // raw.githubusercontent.com sends CORS headers, unlike the redirect from qwuke.github.io to qwu.ke
+  xhr.open('GET', 'https://raw.githubusercontent.com/Qwuke/recurse-ring/main/sites.json', true);
   
   xhr.onload = function() {
     if (xhr.status >= 200 && xhr.status < 400) {
