@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>The Recurse Webring</title>
-    <link rel="stylesheet" href="/styles.css">
-    <!-- ..."This Website Uses No CSS"? Well, I lied! But only because I'm waiting for a better HTML-only accordion interface: --> 
-    <!-- TODO: Remove CSS after Popover API support is widespread: https://developer.mozilla.org/en-US/docs/Web/API/Popover_API -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script src="/ring.js" type="text/javascript"></script>
   </head>
@@ -123,11 +120,9 @@
               {{site.recurse_name}}
             {% endif %}
             {% if user and user.id == site.recurse_id %}
-              <input type='checkbox' style='display: none' id="cb{{loop.index}}">
-              <button for="cb{{loop.index}}" type="button">
-                <label for="cb{{loop.index}}"> </label>
-              </button>
-              <div>
+              <button popovertarget="edit{{loop.index}}" type="button">👀 Edit or view HTML</button>
+              <div id="edit{{loop.index}}" popover>
+                <button popovertarget="edit{{loop.index}}" popovertargetaction="hide" type="button">👁️👁️ Hide</button>
                 <form action="/sites/update/{{site.website_id}}" method="post">
                     <fieldset>
                       <legend>Website Info</legend>
@@ -159,7 +154,7 @@
                 </form>
                 <p>Now all you need to do is add the ring-url-to-direct-url script at <code>https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js</code> in your header element like so:
                   <br>
-                  <code><textarea cols="140" rows="5" readonly>
+                  <code><textarea cols="56" rows="7" readonly>
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"&gt;&lt;/script&gt;
@@ -168,7 +163,7 @@
                 </p>
                 <p>And then add these 4 HTML elements to the body of your page:
                   <br> 
-                  <code><textarea cols="140" rows="4" readonly>
+                  <code><textarea cols="56" rows="10" readonly>
 &lt;div&gt;&lt;a id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{site.website_id}}"&gt;Prev&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-home" data-rc-uuid="{{site.website_uuid}}" href="https://ring.recurse.com/"&gt;The Recurse Webring&lt;/a&gt;&lt;/div&gt;
 &lt;div&gt;&lt;a id="rc-ring-rand" href="https://ring.recurse.com/rand"&gt;Random&lt;/a&gt;&lt;/div&gt;
