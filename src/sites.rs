@@ -19,7 +19,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::{
-    get_deserialized_sites, get_named_sites, get_site_content, ClientTokens, SiteData, SitesMap,
+    get_deserialized_sites, get_gh_content, get_named_sites, ClientTokens, SiteData, SitesMap,
     User, GH_REPO, GH_SITES_PATH, GH_USER,
 };
 
@@ -58,7 +58,7 @@ fn valid_domain<'v>(input_url: &str) -> form::Result<'v, ()> {
 }
 
 async fn get_sites_and_shas(gh_client: &Octocrab) -> Result<(Vec<SiteData>, String)> {
-    let sites_sha = get_site_content(&gh_client).await?.sha;
+    let sites_sha = get_gh_content(&gh_client, GH_SITES_PATH).await?.sha;
     let recurse_sites = get_deserialized_sites(&gh_client).await?;
     Ok((recurse_sites, sites_sha))
 }
@@ -83,10 +83,11 @@ async fn update_and_build_formatted_sites(
     Ok(json_output)
 }
 
-async fn update_gh_sites(
+pub async fn update_gh_file(
     locked_gh_client: &Octocrab,
+    path: &str,
     json_output: String,
-    sites_sha: String,
+    file_sha: String,
     commit_message: String,
 ) -> Result<FileUpdate, Error> {
     let commit_author = CommitAuthor {
@@ -95,12 +96,12 @@ async fn update_gh_sites(
     };
     locked_gh_client
         .repos(GH_USER, GH_REPO)
-        .update_file(GH_SITES_PATH, commit_message, json_output, &sites_sha)
+        .update_file(path, commit_message, json_output, &file_sha)
         .branch("main")
         .commiter(commit_author.clone())
         .author(commit_author)
         .send().await
-        .context("Could not update GitHub site files")
+        .context("Could not update GitHub file")
 }
 
 #[post("/sites/add", data = "<form>")]
@@ -136,7 +137,7 @@ pub async fn add(
         update_and_build_formatted_sites(sites_data, client_tokens, recurse_sites).await?;
 
     let commit_message = format!("Automated Action: Added a new site for '{}'", form.url);
-    update_gh_sites(&locked_gh_client, json_output, sites_sha, commit_message).await?;
+    update_gh_file(&locked_gh_client, GH_SITES_PATH, json_output, sites_sha, commit_message).await?;
 
     Ok(Redirect::to(format!("/?id={}&uuid_str={}", max_website_id + 1, uuid_str)))
 }
@@ -193,7 +194,7 @@ pub async fn update(
         "Automated Action: Updated a site for '{}'",
         current_site.url
     );
-    update_gh_sites(&locked_gh_client, json_output, sites_sha, commit_message).await
+    update_gh_file(&locked_gh_client, GH_SITES_PATH, json_output, sites_sha, commit_message).await
         .map_err(|e| (Status::InternalServerError, Debug(e)))?;
 
     Ok(Redirect::to(format!("/")))
@@ -231,7 +232,7 @@ pub async fn delete(
         "Automated Action: Removed a site for '{}'",
         removed_site.url
     );
-    update_gh_sites(&locked_gh_client, json_output, sites_sha, commit_message).await
+    update_gh_file(&locked_gh_client, GH_SITES_PATH, json_output, sites_sha, commit_message).await
         .map_err(|e| (Status::InternalServerError, Debug(e)))?;
 
     Ok(Redirect::to(format!("/")))

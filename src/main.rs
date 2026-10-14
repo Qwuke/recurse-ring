@@ -19,6 +19,7 @@ use std::collections::BTreeMap;
 use std::ops::Bound;
 use tokio::sync::{Mutex, RwLock};
 
+mod checks;
 mod oauth;
 mod sites;
 
@@ -97,11 +98,11 @@ impl<'r> FromRequest<'r> for User {
     }
 }
 
-async fn get_site_content(octocrab: &Octocrab) -> Result<Content> {
+async fn get_gh_content(octocrab: &Octocrab, path: &str) -> Result<Content> {
     let all_contents = octocrab
         .repos(GH_USER, GH_REPO)
         .get_content()
-        .path(GH_SITES_PATH)
+        .path(path)
         .r#ref("main")
         .send().await?;
 
@@ -109,11 +110,11 @@ async fn get_site_content(octocrab: &Octocrab) -> Result<Content> {
         .items
         .into_iter()
         .next()
-        .ok_or(anyhow!("Missing GitHub content for {}", GH_SITES_PATH))
+        .ok_or(anyhow!("Missing GitHub content for {}", path))
 }
 
 async fn get_deserialized_sites(octocrab: &Octocrab) -> Result<Vec<SiteData>> {
-    let decoded_sites = get_site_content(octocrab).await?
+    let decoded_sites = get_gh_content(octocrab, GH_SITES_PATH).await?
         .decoded_content()
         .ok_or(anyhow!("Could not decode GitHub content"))?;
 
@@ -160,6 +161,7 @@ async fn get_named_sites(
 async fn authed(
     user: User,
     sites_data: &State<SitesMap>,
+    check_log: &State<Mutex<checks::CheckLog>>,
     id: Option<u32>,
     uuid_str: Option<String>,
 ) -> Template {
@@ -172,9 +174,12 @@ async fn authed(
     let mut rng = thread_rng();
     recurse_sites.shuffle(&mut rng);
     
+    // The check log is locked while a check is in progress
+    let checks = check_log.try_lock().ok().map(|log| log.clone());
+
     Template::render(
         "index",
-        context! { sites: recurse_sites, user, id, uuid_str })
+        context! { sites: recurse_sites, user, id, uuid_str, checks })
 }
 
 #[get("/", rank = 2)]
@@ -279,6 +284,9 @@ async fn rocket() -> _ {
         .map(|site| (site.website_id, site))
         .collect::<BTreeMap<u32, SiteData>>();
 
+    let check_log = checks::get_check_log(&octocrab).await
+        .unwrap_or_default();
+
     let cors = CorsOptions::default()
         .allowed_origins(AllowedOrigins::all())
         .allowed_methods(
@@ -294,12 +302,13 @@ async fn rocket() -> _ {
         .manage(Mutex::new(octocrab))
         .manage(Mutex::new(config))
         .manage(RwLock::new(ordered_sites) as SitesMap)
+        .manage(Mutex::new(check_log))
         .attach(cors)
         .attach(oauth::recurse_oauth_fairing())
         .attach(Template::fairing())
         .configure(Config::figment().merge(("port", 4000)))
         .mount("/", routes![authed, home, sites::add, sites::update, 
-            sites::delete, logout, prev, next, random, dynamic_json, health])
+            sites::delete, checks::check, logout, prev, next, random, dynamic_json, health])
         .mount("/", FileServer::from(relative!("static")))
         .mount("/static/", FileServer::from(relative!("static")).rank(3))
 }
