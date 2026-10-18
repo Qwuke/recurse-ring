@@ -135,6 +135,8 @@
                         <label for="domain">Website Domain</label>
                         <input type="url"
                             placeholder="https://... or http://..."
+                            pattern="[^#]*"
+                            title="URLs with a # (e.g. hash-routed pages like https://example.com/#/blog) can't be added - please link to a page without a # instead"
                             name="url"
                             id="url"
                             value="{{site.url}}"
@@ -201,6 +203,8 @@ Thanks,
               <label for="domain">Website Domain</label>
               <input type="url"
                   placeholder="https://... or http://..."
+                  pattern="[^#]*"
+                  title="URLs with a # (e.g. hash-routed pages like https://example.com/#/blog) can't be added - please link to a page without a # instead"
                   name="url"
                   id="url"
               />
