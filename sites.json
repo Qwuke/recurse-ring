@@ -486,5 +486,13 @@
     "website_name": "Perspective",
     "is_anonymous": false,
     "url": "https://perspective.credit"
+  },
+  {
+    "website_id": 94,
+    "website_uuid": "ae0cdde0-6443-4eb8-9aac-122ef42c07ae",
+    "recurse_id": 7712,
+    "website_name": "Perspective",
+    "is_anonymous": false,
+    "url": "https://perspective.credit"
   }
 ]
